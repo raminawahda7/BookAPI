@@ -1,4 +1,5 @@
 ﻿using BookAPI.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,24 +25,27 @@ namespace BookAPI.Repositories
             return book;
         }
 
-        public Task Delete(int id)
+        public async Task Delete(int id)
         {
-            throw new NotImplementedException();
+            var bookToDelete =await _context.Books.FindAsync(id);
+            _context.Books.Remove(bookToDelete);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<Book>> get()
+        public async Task<IEnumerable<Book>> Get()
         {
-            throw new NotImplementedException();
+            return await _context.Books.ToListAsync();
         }
 
-        public Task<Book> Get(int id)
+        public async Task<Book> Get(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Books.FindAsync(id);
         }
 
-        public Task<Book> Update(Book book)
+        public async Task Update(Book book)
         {
-            throw new NotImplementedException();
+            _context.Entry(book).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
 using BookAPI.Models;
+using BookAPI.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,8 @@ namespace WebApplicationPractice
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IBookRepository, BookRepository>();
+
             services.AddDbContext<BookContext>(o => o.UseSqlite("Data source=books"));
             services.AddControllers();
             services.AddSwaggerGen(c =>
