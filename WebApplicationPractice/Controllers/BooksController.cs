@@ -34,20 +34,26 @@ namespace BookAPI
         [HttpPost]
         public async Task<ActionResult<Book>> PostBooks([FromBody] Book book)
         {
-            var newBook = await _bookRepository.Create(book);
-            return CreatedAtAction(nameof(GetBooks), new { id = newBook.Id }, newBook);
+            if (ModelState.IsValid)
+            {
+                var newBook = await _bookRepository.Create(book);
+                return CreatedAtAction(nameof(GetBooks), new { id = newBook.Id }, newBook);
+            }
+
+            ModelState.AddModelError("", "Please check fields for error");
+            return NoContent();
         }
 
         [HttpPut]
-        public async Task<ActionResult> PutBooks (int id , [FromBody] Book book)
+        public async Task<ActionResult> PutBooks(int id, [FromBody] Book book)
         {
-            if(id != book.Id)
+            if (id != book.Id)
             {
                 return BadRequest();
             }
             await _bookRepository.Update(book);
 
-            return NoContent();
+            return ValidationProblem();
         }
 
         [HttpDelete("{id}")]

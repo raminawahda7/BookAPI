@@ -19,7 +19,7 @@ namespace BookAPI.Repositories
         public async Task<Book> Create(Book book)
         {
             // we are using Add method to add a new instance of the book class.
-            _context.Books.Add(book);
+            _context.BookStore.Add(book);
             await _context.SaveChangesAsync();
 
             return book;
@@ -27,19 +27,19 @@ namespace BookAPI.Repositories
 
         public async Task Delete(int id)
         {
-            var bookToDelete =await _context.Books.FindAsync(id);
-            _context.Books.Remove(bookToDelete);
+            var bookToDelete =await _context.BookStore.FindAsync(id);
+            _context.BookStore.Remove(bookToDelete);
             await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Book>> Get()
         {
-            return await _context.Books.ToListAsync();
+            return await _context.BookStore.ToListAsync();
         }
 
         public async Task<Book> Get(int id)
         {
-            return await _context.Books.FindAsync(id);
+            return await _context.BookStore.FindAsync(id);
         }
 
         public async Task Update(Book book)

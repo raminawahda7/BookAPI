@@ -24,14 +24,16 @@ namespace BookAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IBookRepository, BookRepository>();
+            //services.AddScoped<IBookRepository, BookRepository>();
 
-            services.AddDbContext<BookContext>(o => o.UseSqlite("Data source=books"));
+            services.AddDbContextPool<BookContext>(o => o.UseSqlServer(Configuration.GetConnectionString("BookDBConnection")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BookAPI", Version = "v1" });
             });
+            //services.AddMvc().AddXmlSerializerFormatters();
+            services.AddScoped<IBookRepository,SQLBookRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,7 +43,7 @@ namespace BookAPI
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApplicationPractice v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookAPI"));
             }
 
             app.UseHttpsRedirection();
