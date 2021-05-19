@@ -23,25 +23,52 @@ namespace BookAPI
         public async Task<IEnumerable<Book>> GetBooks()
         {
             return await _bookRepository.Get();
+
         }
+
+        //// ------- GetBook with special Dto:
+
+
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Book>> GetBooks(int id)
+        //{
+        //    return await _bookRepository.Get(id);
+        //}
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> GetBooks(int id)
         {
-            return await _bookRepository.Get(id);
+            var bookFromRepo = await _bookRepository.Get(id);
+            if (bookFromRepo == null)
+            {
+                return NotFound();
+            }
+            var BookDto = new BookDto
+            {
+                Id = bookFromRepo.Id,
+                Title = bookFromRepo.Title,
+                Author = bookFromRepo.Author
+            };
+
+            return Ok(BookDto);
         }
 
         [HttpPost]
         public async Task<ActionResult<Book>> PostBooks([FromBody] Book book)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var newBook = await _bookRepository.Create(book);
-                return CreatedAtAction(nameof(GetBooks), new { id = newBook.Id }, newBook);
+                return BadRequest(ModelState);
             }
+            var newBook = await _bookRepository.Create(book);
+            var BookDto = new BookDto
+            {
+                Id = newBook.Id,
+                Title = newBook.Title,
+                Author = newBook.Author
+            };
+            return CreatedAtAction(nameof(GetBooks), new { id = newBook.Id }, BookDto);
 
-            ModelState.AddModelError("", "Please check fields for error");
-            return NoContent();
         }
 
         [HttpPut]
