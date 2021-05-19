@@ -2,7 +2,7 @@
 
 namespace BookAPI.Migrations
 {
-    public partial class pleaseWork : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -11,8 +11,8 @@ namespace BookAPI.Models
         public BookContext(DbContextOptions<BookContext> options)
         : base(options)
         {
-            Database.EnsureDeleted();
-            //Database.EnsureCreated();
+            //Database.EnsureDeleted();
+            Database.EnsureCreated(); // if it didn't added, it will return SqlException error ( The login failed. Login failed for user).
         }
         public DbSet<Book> BookStore { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
