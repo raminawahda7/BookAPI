@@ -5,10 +5,13 @@ using System.Threading.Tasks;
 
 namespace BookAPI.Models
 {
-    public class BookDto
+    public class BookModel
     {
-        public int Id { get; set; }
         public string Title { get; set; }
+
         public string Author { get; set; }
+
+        public string Description { get; set; }
+
     }
 }

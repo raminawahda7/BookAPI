@@ -42,10 +42,11 @@ namespace BookAPI.Repositories
             return await _context.BookStore.FindAsync(id);
         }
 
-        public async Task Update(Book book)
+        public async Task<Book> Update(Book book)
         {
             _context.Entry(book).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+            return book;
         }
     }
 }

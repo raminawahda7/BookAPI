@@ -12,11 +12,13 @@ namespace BookAPI.Models
         : base(options)
         {
             //Database.EnsureDeleted();
-            Database.EnsureCreated(); // if it didn't added, it will return SqlException error ( The login failed. Login failed for user).
+            //Database.EnsureCreated(); // if it didn't added, it will return SqlException error ( The login failed. Login failed for user).
         }
         public DbSet<Book> BookStore { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+
             modelBuilder.Entity<Book>().HasData(
                 new Book
                 {

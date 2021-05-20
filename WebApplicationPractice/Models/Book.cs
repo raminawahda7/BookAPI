@@ -23,6 +23,6 @@ namespace BookAPI.Models
         [MaxLength(150)]
         public string Description { get; set; }
 
-
+        //public bool available { get; set; }
     }
 }
