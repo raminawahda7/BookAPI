@@ -1,5 +1,6 @@
-using BookAPI.Models;
+using BookAPI.Data;
 using BookAPI.Repositories;
+using BookAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,14 +27,17 @@ namespace BookAPI
         {
             //services.AddScoped<IBookRepository, BookRepository>();
 
-            services.AddDbContextPool<BookContext>(o => o.UseSqlServer(Configuration.GetConnectionString("BookDBConnection")));
+            services.AddDbContextPool<AppDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("BookDBConnection")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BookAPI", Version = "v1" });
             });
             //services.AddMvc().AddXmlSerializerFormatters();
-            services.AddScoped<IBookRepository,SQLBookRepository>();
+            services.AddScoped<IRepository<Book,int>,SQLBookRepository>();
+            services.AddScoped<IRepository<Author, int>, SQLAuthorRepository>();
+            services.AddScoped<IRepository<Publisher, int>, SQLPublisherRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

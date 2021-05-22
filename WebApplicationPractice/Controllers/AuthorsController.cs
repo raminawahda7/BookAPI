@@ -13,12 +13,12 @@ namespace BookAPI
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BooksController : ControllerBase
+    public class AuthorsController : ControllerBase
     {
         private readonly IRepository<Book, int> _bookRepository;
         private readonly IRepository<Author, int> _authorRepository;
         private readonly IRepository<Publisher, int> _publisherRepository;
-        public BooksController(IRepository<Book, int> bookRepository,
+        public AuthorsController(IRepository<Book, int> bookRepository,
             IRepository<Author, int> authorRepository
             , IRepository<Publisher, int> publisherRepository)
 
@@ -30,7 +30,7 @@ namespace BookAPI
         [HttpGet]
         public async Task<IEnumerable<AuthorResource>> GetBooks(string author)
         {
-            var entities = await _bookRepository.Get();
+            var entities = await _authorRepository.Get();
             //if(author != null)
             //    entities = entities.Where(e => e.Author.Contains(author));
             var listOfBookResource = new List<AuthorResource>();
@@ -54,7 +54,7 @@ namespace BookAPI
         [HttpGet("{id}")]
         public async Task<ActionResult<AuthorResource>> GetBooks(int id)
         {
-            var bookFromRepo = await _bookRepository?.Get(id);
+            var bookFromRepo = await _authorRepository?.Get(id);
             if (bookFromRepo == null)
             {
                 return NotFound();
@@ -83,7 +83,7 @@ namespace BookAPI
                 Description = bookModel.Description
             };
             // Entity from Book
-            var newBook = await _bookRepository.Create(bookEntity);
+            var newBook = await _authorRepository.Create(bookEntity);
 
             // Here map (newBook which is Entity) -> Resource
             var bookResource = new AuthorResource
@@ -105,7 +105,7 @@ namespace BookAPI
                 return BadRequest(ModelState);
             }
             // You can make it like Yazan said from his document.
-            var bookToUpdate = await _bookRepository?.Get(id);
+            var bookToUpdate = await _authorRepository?.Get(id);
 
             bookToUpdate.Title = bookModel.Title;
             bookToUpdate.Description = bookModel.Description;
@@ -113,7 +113,7 @@ namespace BookAPI
 
             if (bookToUpdate == null)
                 return NotFound();
-            await _bookRepository.Update(bookToUpdate);
+            await _authorRepository.Update(bookToUpdate);
             var bookResource = new AuthorResource
             {
                 Id = bookToUpdate.Id,
@@ -127,11 +127,11 @@ namespace BookAPI
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var bookToDelete = await _bookRepository.Get(id);
+            var bookToDelete = await _authorRepository.Get(id);
             if (bookToDelete == null)
                 return NotFound();
 
-            await _bookRepository.Delete(bookToDelete.Id);
+            await _authorRepository.Delete(bookToDelete.Id);
             return NoContent();
         }
         

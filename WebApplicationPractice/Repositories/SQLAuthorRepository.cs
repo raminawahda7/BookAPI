@@ -8,42 +8,42 @@ using System.Threading.Tasks;
 
 namespace BookAPI.Repositories
 {
-    public class SQLBookRepository : IRepository<Book,int>
+    public class SQLAuthorRepository : IRepository<Author,int>
     {
         private readonly AppDbContext _Context;
 
-        public SQLBookRepository(AppDbContext Context)
+        public SQLAuthorRepository(AppDbContext Context)
         {
             _Context = Context;
         }
-        public async Task<Book> Create(Book book)
+        public async Task<Author> Create(Author author)
         {
-            await _Context.Book.AddAsync(book);
-            //_bookContext.SaveChangesAsync();
+            await _Context.Authors.AddAsync(author);
+            //_Context.SaveChangesAsync();
 
-            return book;
+            return author;
         }
 
         public async Task Delete(int id)
         {
             // check if there is book for this id : then store it in a variable using await keywprd ((( that is mean wait till find the book THEN put it in a variable)));
-            var bookToDelete = await _Context.Book.FindAsync(id);
-            _Context.Book.Remove(bookToDelete);
+            var bookToDelete = await _Context.Authors.FindAsync(id);
+            _Context.Authors.Remove(bookToDelete);
             await _Context.SaveChangesAsync();
 
         }
 
-        public async Task<IEnumerable<Book>> Get()
+        public async Task<IEnumerable<Author>> Get()
         {
-            return await _Context.Book.ToListAsync();
+            return await _Context.Authors.ToListAsync();
         }
 
-        public async Task<Book> Get(int id)
+        public async Task<Author> Get(int id)
         {
-            return await _Context.Book.FindAsync(id);
+            return await _Context.Authors.FindAsync(id);
         }
 
-        public async Task<Book> Update(Book book)
+        public async Task<Author> Update(Author book)
         {
             _Context.Entry(book).State = EntityState.Modified;
             await _Context.SaveChangesAsync();
