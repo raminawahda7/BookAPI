@@ -20,8 +20,7 @@ namespace BookAPI.Repositories
         {
              _Context.Book.Add(book);
             await _Context.SaveChangesAsync();
-
-            return book;
+            return await _Context.Book.Include(b => b.Publisher).FirstOrDefaultAsync(e => e.Id == book.Id);
         }
 
         public async Task Delete(int id)

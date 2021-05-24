@@ -46,7 +46,7 @@ namespace BookAPI
                         Title = book.Title,
                         Description = book.Description,
                         IsAvailable = book.IsAvailable,
-                        PublisherName = book.Publisher.Name,
+                        Publisher = book.Publisher?.Name,
                     };
 
                     listOfBookResource.Add(bookResource);
@@ -84,7 +84,7 @@ namespace BookAPI
 
 
         [HttpPost]
-        public async Task<ActionResult<PublisherResource>> PostPublihser([FromBody] PublisherModel publisherModel)
+        public async Task<ActionResult<PublisherResource>> PostPubliser([FromBody] PublisherModel publisherModel)
         {
             if (!ModelState.IsValid)
             {
