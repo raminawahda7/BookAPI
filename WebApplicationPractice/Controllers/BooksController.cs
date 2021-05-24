@@ -28,18 +28,22 @@ namespace BookAPI
             _publisherRepository = publisherRepository;
         }
         [HttpGet]
-        public async Task<IEnumerable<AuthorResource>> GetBooks(string author)
+        public async Task<IEnumerable<BookResource>> GetBooks(string author)
         {
+            // To-Do: implement author parameter
             var entities = await _bookRepository.Get();
-            //if(author != null)
-            //    entities = entities.Where(e => e.Author.Contains(author));
-            var listOfBookResource = new List<AuthorResource>();
+            //if (author != null)
+            //    entities = entities.Where(e => e.Authors.Contains(author));
+            var listOfBookResource = new List<BookResource>();
 
             foreach (var item in entities)
             {
-                var bookResource = new AuthorResource { 
-                Id = item.Id,
-                Title = item.Title,
+                var bookResource = new BookResource {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Description = item.Description,
+                    IsAvailable = item.IsAvailable,
+                    PublisherName = item.Publisher.Name,
                 };
 
                 listOfBookResource.Add(bookResource);
@@ -52,17 +56,21 @@ namespace BookAPI
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AuthorResource>> GetBooks(int id)
+        public async Task<ActionResult<BookResource>> GetBooks(int id)
         {
             var bookFromRepo = await _bookRepository?.Get(id);
             if (bookFromRepo == null)
             {
                 return NotFound();
             }
-            var bookResource = new AuthorResource
+            var bookResource = new BookResource
             {
                 Id = bookFromRepo.Id,
                 Title = bookFromRepo.Title,
+                Description = bookFromRepo.Description,
+                IsAvailable = bookFromRepo.IsAvailable,
+                PublisherName = bookFromRepo.Publisher.Name,
+                //AuthorNames = bookFromRepo.Authors.Select(e => e.FullName).ToList()
             };
 
             return Ok(bookResource);
@@ -70,7 +78,7 @@ namespace BookAPI
 
 
         [HttpPost]
-        public async Task<ActionResult<AuthorResource>> PostBooks([FromBody] AuthorModel bookModel)
+        public async Task<ActionResult<BookResource>> PostBook([FromBody] BookModel bookModel)
         {
             if (!ModelState.IsValid)
             {
@@ -80,16 +88,24 @@ namespace BookAPI
             var bookEntity = new Book
             {
                 Title = bookModel.Title,
-                Description = bookModel.Description
+                Description = bookModel.Description,
+                IsAvailable = bookModel.IsAvailable,
+                PublisherId=bookModel.PublisherId,
+                //Authors = bookModel.AuthorIds.Select(id=> new Author { Id = id }).ToList()
             };
-            // Entity from Book
+
+            // insert this record to database by repo
             var newBook = await _bookRepository.Create(bookEntity);
 
             // Here map (newBook which is Entity) -> Resource
-            var bookResource = new AuthorResource
+            var bookResource = new BookResource
             {
                 Id = newBook.Id,
                 Title = newBook.Title,
+                Description = newBook.Description,
+                IsAvailable = newBook.IsAvailable,
+                //PublisherName = newBook.Publisher.Name,
+                //AuthorNames = newBook.Authors.Select(e=>  e.FullName ).ToList()
             };
 
 
@@ -98,7 +114,7 @@ namespace BookAPI
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<AuthorResource>> PutBooks(int id, [FromBody] AuthorModel bookModel)
+        public async Task<ActionResult<BookResource>> PutBook(int id, [FromBody] BookModel bookModel)
         {
             if (!ModelState.IsValid)
             {
@@ -109,18 +125,24 @@ namespace BookAPI
 
             bookToUpdate.Title = bookModel.Title;
             bookToUpdate.Description = bookModel.Description;
-
+            bookToUpdate.IsAvailable = bookModel.IsAvailable;
+            bookToUpdate.PublisherId = bookModel.PublisherId;
+            //bookToUpdate.Authors = bookModel.AuthorIds.Select(id => new Author { Id = id }).ToList();
 
             if (bookToUpdate == null)
                 return NotFound();
             await _bookRepository.Update(bookToUpdate);
-            var bookResource = new AuthorResource
+            var bookResource = new BookResource
             {
                 Id = bookToUpdate.Id,
                 Title = bookToUpdate.Title,
+                Description = bookToUpdate.Description,
+                IsAvailable = bookToUpdate.IsAvailable,
+                PublisherName=bookToUpdate.Publisher.Name,
+                //AuthorNames = bookToUpdate.Authors.Select(e=>  e.FullName ).ToList()
             };
-            JObject obj = (JObject)JToken.FromObject(bookResource);
-            Console.WriteLine(bookResource);
+            //JObject obj = (JObject)JToken.FromObject(bookResource);
+            //Console.WriteLine(bookResource);
             return Ok(bookResource);
         }
 

@@ -18,8 +18,8 @@ namespace BookAPI.Repositories
         }
         public async Task<Publisher> Create(Publisher publisher)
         {
-            await __Context.Publishers.AddAsync(publisher);
-            //__Context.SaveChangesAsync();
+             __Context.Publishers.Add(publisher);
+            await __Context.SaveChangesAsync();
 
             return publisher;
         }
@@ -27,15 +27,15 @@ namespace BookAPI.Repositories
         public async Task Delete(int id)
         {
             // check if there is book for this id : then store it in a variable using await keywprd ((( that is mean wait till find the book THEN put it in a variable)));
-            var bookToDelete = await __Context.Publishers.FindAsync(id);
-            __Context.Publishers.Remove(bookToDelete);
+            var publisherToDelete = await __Context.Publishers.FindAsync(id);
+            __Context.Publishers.Remove(publisherToDelete);
             await __Context.SaveChangesAsync();
 
         }
 
         public async Task<IEnumerable<Publisher>> Get()
         {
-            return await __Context.Publishers.ToListAsync();
+            return await __Context.Publishers.Include(b => b.Books).ToListAsync();
         }
 
         public async Task<Publisher> Get(int id)
@@ -43,11 +43,11 @@ namespace BookAPI.Repositories
             return await __Context.Publishers.FindAsync(id);
         }
 
-        public async Task<Publisher> Update(Publisher book)
+        public async Task<Publisher> Update(Publisher publisher)
         {
-            __Context.Entry(book).State = EntityState.Modified;
+            __Context.Entry(publisher).State = EntityState.Modified;
             await __Context.SaveChangesAsync();
-            return book;
+            return publisher;
         }
     }
 }

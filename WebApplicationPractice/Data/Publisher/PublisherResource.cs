@@ -8,6 +8,7 @@ namespace BookAPI.Data
     public class PublisherResource
     {
         public string Name { get; set; }
+        public List<BookResource> Books { get; set; }
 
     }
 }

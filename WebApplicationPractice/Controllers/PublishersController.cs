@@ -28,113 +28,123 @@ namespace BookAPI
             _publisherRepository = publisherRepository;
         }
         [HttpGet]
-        public async Task<IEnumerable<AuthorResource>> GetBooks(string author)
+        public async Task<IEnumerable<PublisherResource>> GetPublishers(string author)
         {
             var entities = await _publisherRepository.Get();
-            //if(author != null)
-            //    entities = entities.Where(e => e.Author.Contains(author));
-            var listOfBookResource = new List<AuthorResource>();
+
+            var listOfPublisherResource = new List<PublisherResource>();
+            var listOfBookResource = new List<BookResource>();
+
 
             foreach (var item in entities)
             {
-                var bookResource = new AuthorResource { 
-                Id = item.Id,
-                Title = item.Title,
+                foreach (var book in item.Books)
+                {
+                    var bookResource = new BookResource
+                    {
+                        Id = book.Id,
+                        Title = book.Title,
+                        Description = book.Description,
+                        IsAvailable = book.IsAvailable,
+                        PublisherName = book.Publisher.Name,
+                    };
+
+                    listOfBookResource.Add(bookResource);
+                }
+                var publisherResource = new PublisherResource
+                {
+                    Name = item.Name,
+                    Books = listOfBookResource
                 };
 
-                listOfBookResource.Add(bookResource);
+                listOfPublisherResource.Add(publisherResource);
             }
-            Console.WriteLine(listOfBookResource);
-            return listOfBookResource;
+            Console.WriteLine(listOfPublisherResource);
+            return listOfPublisherResource;
 
         }
 
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AuthorResource>> GetBooks(int id)
+        public async Task<ActionResult<PublisherResource>> GetPublishers(int id)
         {
-            var bookFromRepo = await _publisherRepository?.Get(id);
-            if (bookFromRepo == null)
+            var publisherFromRepo = await _publisherRepository?.Get(id);
+            if (publisherFromRepo == null)
             {
                 return NotFound();
             }
-            var bookResource = new AuthorResource
+            var publisherResource = new PublisherResource
             {
-                Id = bookFromRepo.Id,
-                Title = bookFromRepo.Title,
+                Name = publisherFromRepo.Name,
             };
 
-            return Ok(bookResource);
+            return Ok(publisherResource);
         }
 
 
         [HttpPost]
-        public async Task<ActionResult<AuthorResource>> PostBooks([FromBody] AuthorModel bookModel)
+        public async Task<ActionResult<PublisherResource>> PostPublihser([FromBody] PublisherModel publisherModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             // Here map (model) -> entity
-            var bookEntity = new Book
+            var publisherEntity = new Publisher
             {
-                Title = bookModel.Title,
-                Description = bookModel.Description
+                Name = publisherModel.Name,
             };
             // Entity from Book
-            var newBook = await _publisherRepository.Create(bookEntity);
+            var newPublisher = await _publisherRepository.Create(publisherEntity);
 
             // Here map (newBook which is Entity) -> Resource
-            var bookResource = new AuthorResource
+            var publisherResource = new PublisherResource
             {
-                Id = newBook.Id,
-                Title = newBook.Title,
+                Name = newPublisher.Name,
             };
 
 
-            return CreatedAtAction(nameof(GetBooks), new { id = newBook.Id }, bookResource);
+            return CreatedAtAction(nameof(GetPublishers), new { id = newPublisher.Id }, publisherResource);
 
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<AuthorResource>> PutBooks(int id, [FromBody] AuthorModel bookModel)
+        public async Task<ActionResult<PublisherResource>> PutPublihser(int id, [FromBody] PublisherModel publisherModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             // You can make it like Yazan said from his document.
-            var bookToUpdate = await _publisherRepository?.Get(id);
+            var publisherToUpdate = await _publisherRepository?.Get(id);
 
-            bookToUpdate.Title = bookModel.Title;
-            bookToUpdate.Description = bookModel.Description;
+            publisherToUpdate.Name = publisherModel.Name;
 
 
-            if (bookToUpdate == null)
+            if (publisherModel == null)
                 return NotFound();
-            await _publisherRepository.Update(bookToUpdate);
-            var bookResource = new AuthorResource
+            await _publisherRepository.Update(publisherToUpdate);
+            var publisherResource = new PublisherResource
             {
-                Id = bookToUpdate.Id,
-                Title = bookToUpdate.Title,
+                Name = publisherToUpdate.Name,
             };
-            JObject obj = (JObject)JToken.FromObject(bookResource);
-            Console.WriteLine(bookResource);
-            return Ok(bookResource);
+            //JObject obj = (JObject)JToken.FromObject(bookResource);
+            //Console.WriteLine(bookResource);
+            return Ok(publisherResource);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var bookToDelete = await _publisherRepository.Get(id);
-            if (bookToDelete == null)
+            var publisherToDelete = await _publisherRepository.Get(id);
+            if (publisherToDelete == null)
                 return NotFound();
 
-            await _publisherRepository.Delete(bookToDelete.Id);
+            await _publisherRepository.Delete(publisherToDelete.Id);
             return NoContent();
         }
-        
-        
+
+
     }
 }

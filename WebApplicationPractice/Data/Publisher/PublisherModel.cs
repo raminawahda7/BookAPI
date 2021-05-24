@@ -9,5 +9,8 @@ namespace BookAPI.Data
     {
         public string Name { get; set; }
 
+        // It Will make circular dependency 
+        //public List<int> BooksId { get; set; }
+
     }
 }

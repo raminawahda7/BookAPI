@@ -15,126 +15,128 @@ namespace BookAPI
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        private readonly IRepository<Book, int> _bookRepository;
         private readonly IRepository<Author, int> _authorRepository;
-        private readonly IRepository<Publisher, int> _publisherRepository;
-        public AuthorsController(IRepository<Book, int> bookRepository,
-            IRepository<Author, int> authorRepository
-            , IRepository<Publisher, int> publisherRepository)
+
+        public AuthorsController(IRepository<Author, int> authorRepository)
 
         {
-            _bookRepository = bookRepository;
             _authorRepository = authorRepository;
-            _publisherRepository = publisherRepository;
         }
+
+
+        // TO-Do: add a new author_resource contains List of Book-Titles field.
+        // Then change the resource for GetAuthors to return authors with what they wrote :)
         [HttpGet]
-        public async Task<IEnumerable<AuthorResource>> GetBooks(string author)
+        public async Task<IEnumerable<Author>> GetAuthors(string author)
         {
             var entities = await _authorRepository.Get();
-            //if(author != null)
+            //if (author != null)
             //    entities = entities.Where(e => e.Author.Contains(author));
-            var listOfBookResource = new List<AuthorResource>();
+            var listOfAuthorResource = new List<AuthorResource>();
 
             foreach (var item in entities)
             {
-                var bookResource = new AuthorResource { 
-                Id = item.Id,
-                Title = item.Title,
+                var authorResource = new AuthorResource { 
+                FullName = item.FullName,
+                //BookTitles = item.Books.Select(e=>e.Title).ToList(),
                 };
 
-                listOfBookResource.Add(bookResource);
+                listOfAuthorResource.Add(authorResource);
             }
-            Console.WriteLine(listOfBookResource);
-            return listOfBookResource;
+            Console.WriteLine(listOfAuthorResource);
+            return entities;
 
         }
 
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AuthorResource>> GetBooks(int id)
+        public async Task<ActionResult<AuthorResource>> GetAuthors(int id)
         {
-            var bookFromRepo = await _authorRepository?.Get(id);
-            if (bookFromRepo == null)
+            var authorFromRepo = await _authorRepository?.Get(id);
+            if (authorFromRepo == null)
             {
                 return NotFound();
             }
-            var bookResource = new AuthorResource
+            var authorResource = new AuthorResource
             {
-                Id = bookFromRepo.Id,
-                Title = bookFromRepo.Title,
+                Id = authorFromRepo.Id,
+                FullName = authorFromRepo.FullName,
+                //BookTitles = authorFromRepo.Books.Select(e => e.Title).ToList(),
             };
 
-            return Ok(bookResource);
+            return Ok(authorResource);
         }
 
 
         [HttpPost]
-        public async Task<ActionResult<AuthorResource>> PostBooks([FromBody] AuthorModel bookModel)
+        public async Task<ActionResult<AuthorResource>> PostAuthor([FromBody] AuthorModel authorModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             // Here map (model) -> entity
-            var bookEntity = new Book
+            var authorEntity = new Author
             {
-                Title = bookModel.Title,
-                Description = bookModel.Description
+                FirstName = authorModel.FirstName,
+                LastName = authorModel.LastName,
+
             };
             // Entity from Book
-            var newBook = await _authorRepository.Create(bookEntity);
+            var newAuthor = await _authorRepository.Create(authorEntity);
 
             // Here map (newBook which is Entity) -> Resource
-            var bookResource = new AuthorResource
+            var authorResource = new AuthorResource
             {
-                Id = newBook.Id,
-                Title = newBook.Title,
+                Id = newAuthor.Id,
+                FullName = newAuthor.FullName,
+
             };
 
 
-            return CreatedAtAction(nameof(GetBooks), new { id = newBook.Id }, bookResource);
+            return CreatedAtAction(nameof(GetAuthors), new { id = newAuthor.Id }, authorResource);
 
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<AuthorResource>> PutBooks(int id, [FromBody] AuthorModel bookModel)
+        public async Task<ActionResult<AuthorResource>> PutAuthor(int id, [FromBody] AuthorModel authorModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             // You can make it like Yazan said from his document.
-            var bookToUpdate = await _authorRepository?.Get(id);
+            var authorToUpdate = await _authorRepository?.Get(id);
 
-            bookToUpdate.Title = bookModel.Title;
-            bookToUpdate.Description = bookModel.Description;
+            authorToUpdate.FirstName = authorModel.FirstName;
+            authorToUpdate.LastName = authorModel.LastName;
 
 
-            if (bookToUpdate == null)
+            if (authorToUpdate == null)
                 return NotFound();
-            await _authorRepository.Update(bookToUpdate);
-            var bookResource = new AuthorResource
+            await _authorRepository.Update(authorToUpdate);
+            var authorResource = new AuthorResource
             {
-                Id = bookToUpdate.Id,
-                Title = bookToUpdate.Title,
+                Id = authorToUpdate.Id,
+                FullName = authorToUpdate.FullName,
             };
-            JObject obj = (JObject)JToken.FromObject(bookResource);
-            Console.WriteLine(bookResource);
-            return Ok(bookResource);
+            //JObject obj = (JObject)JToken.FromObject(bookResource);
+            //Console.WriteLine(bookResource);
+            return Ok(authorResource);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var bookToDelete = await _authorRepository.Get(id);
-            if (bookToDelete == null)
+            var authorToDelete = await _authorRepository.Get(id);
+            if (authorToDelete == null)
                 return NotFound();
 
-            await _authorRepository.Delete(bookToDelete.Id);
+            await _authorRepository.Delete(authorToDelete.Id);
             return NoContent();
         }
-        
-        
+
+
     }
 }

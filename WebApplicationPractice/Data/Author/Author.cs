@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +16,6 @@ namespace BookAPI.Data
         public string FullName => $"{FirstName} {LastName}";
 
         // Navigations Properties
-        public List<Book_Author> Book_Authors { get; set; }
+        public virtual List<Book> Books { get; set; }
     }
 }

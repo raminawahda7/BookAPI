@@ -18,8 +18,8 @@ namespace BookAPI.Repositories
         }
         public async Task<Author> Create(Author author)
         {
-            await _Context.Authors.AddAsync(author);
-            //_Context.SaveChangesAsync();
+             _Context.Authors.Add(author);
+            await _Context.SaveChangesAsync();
 
             return author;
         }

@@ -44,6 +44,9 @@ namespace BookAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AuthorId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
@@ -61,47 +64,11 @@ namespace BookAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuthorId");
+
                     b.HasIndex("PublisherId");
 
                     b.ToTable("Book");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Novel by Palestinian writer",
-                            IsAvailable = false,
-                            Title = "Men In The Sun"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Combines the complete text of Darwish's two most recent full-length volumes,",
-                            IsAvailable = false,
-                            Title = "The butterfly's burden"
-                        });
-                });
-
-            modelBuilder.Entity("BookAPI.Data.Book_Author", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AutorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AutorId");
-
-                    b.HasIndex("BookId");
-
-                    b.ToTable("Book_Authors");
                 });
 
             modelBuilder.Entity("BookAPI.Data.Publisher", b =>
@@ -121,6 +88,10 @@ namespace BookAPI.Migrations
 
             modelBuilder.Entity("BookAPI.Data.Book", b =>
                 {
+                    b.HasOne("BookAPI.Data.Author", null)
+                        .WithMany("Books")
+                        .HasForeignKey("AuthorId");
+
                     b.HasOne("BookAPI.Data.Publisher", "Publisher")
                         .WithMany("Books")
                         .HasForeignKey("PublisherId");
@@ -128,33 +99,9 @@ namespace BookAPI.Migrations
                     b.Navigation("Publisher");
                 });
 
-            modelBuilder.Entity("BookAPI.Data.Book_Author", b =>
-                {
-                    b.HasOne("BookAPI.Data.Author", "Author")
-                        .WithMany("Book_Authors")
-                        .HasForeignKey("AutorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookAPI.Data.Book", "Book")
-                        .WithMany("Book_Authors")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Book");
-                });
-
             modelBuilder.Entity("BookAPI.Data.Author", b =>
                 {
-                    b.Navigation("Book_Authors");
-                });
-
-            modelBuilder.Entity("BookAPI.Data.Book", b =>
-                {
-                    b.Navigation("Book_Authors");
+                    b.Navigation("Books");
                 });
 
             modelBuilder.Entity("BookAPI.Data.Publisher", b =>
