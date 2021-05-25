@@ -16,18 +16,21 @@ namespace BookAPI
     public class AuthorsController : ControllerBase
     {
         private readonly IRepository<Author, int> _authorRepository;
+        private readonly IRepository<Book, int> _bookRepository;
 
-        public AuthorsController(IRepository<Author, int> authorRepository)
+        public AuthorsController(IRepository<Author, int> authorRepository, IRepository<Book, int> bookRepository)
 
         {
             _authorRepository = authorRepository;
+            _bookRepository = bookRepository;
+
         }
 
 
         // TO-Do: add a new author_resource contains List of Book-Titles field.
         // Then change the resource for GetAuthors to return authors with what they wrote :)
         [HttpGet]
-        public async Task<IEnumerable<Author>> GetAuthors(string author)
+        public async Task<IEnumerable<AuthorResource>> GetAuthors(string author)
         {
             var entities = await _authorRepository.Get();
             //if (author != null)
@@ -36,15 +39,16 @@ namespace BookAPI
 
             foreach (var item in entities)
             {
-                var authorResource = new AuthorResource { 
-                FullName = item.FullName,
-                //BookTitles = item.Books.Select(e=>e.Title).ToList(),
+                var authorResource = new AuthorResource {
+                    Id = item.Id,
+                    FullName = item.FullName,
+                    BookTitles = item.Books.Select(e => e.Title).ToList()
                 };
 
                 listOfAuthorResource.Add(authorResource);
             }
             Console.WriteLine(listOfAuthorResource);
-            return entities;
+            return listOfAuthorResource;
 
         }
 
@@ -58,11 +62,13 @@ namespace BookAPI
             {
                 return NotFound();
             }
+            //var books = _bookRepository.Get().Result.Where(e => bookModel.AuthorIds.Contains(e.Id)).ToList();
+
             var authorResource = new AuthorResource
             {
                 Id = authorFromRepo.Id,
                 FullName = authorFromRepo.FullName,
-                //BookTitles = authorFromRepo.Books.Select(e => e.Title).ToList(),
+                BookTitles = authorFromRepo.Books.Select(e => e.Title).ToList()
             };
 
             return Ok(authorResource);

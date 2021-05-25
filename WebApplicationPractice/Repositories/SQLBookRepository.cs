@@ -19,6 +19,8 @@ namespace BookAPI.Repositories
         public async Task<Book> Create(Book book)
         {
              _Context.Book.Add(book);
+
+            //_Context.Authors.AttachRange(book.Authors);
             await _Context.SaveChangesAsync();
             return await _Context.Book.Include(b => b.Publisher).FirstOrDefaultAsync(e => e.Id == book.Id);
         }
@@ -34,12 +36,12 @@ namespace BookAPI.Repositories
 
         public async Task<IEnumerable<Book>> Get()
         {
-            return await _Context.Book.Include(b=>b.Publisher).ToListAsync();
+            return await _Context.Book.Include(b=>b.Publisher).Include(b => b.Authors).ToListAsync();
         }
 
         public async Task<Book> Get(int id)
         {
-            return await _Context.Book.Include(b=>b.Publisher).FirstOrDefaultAsync(e=>e.Id==id);
+            return await _Context.Book.Include(b=>b.Publisher).Include(b => b.Authors).FirstOrDefaultAsync(e=>e.Id==id);
         }
 
         public async Task<Book> Update(Book book)

@@ -13,6 +13,7 @@ namespace BookAPI.Data
         {
             //Database.EnsureDeleted();
             //Database.EnsureCreated(); // if it didn't added, it will return SqlException error ( The login failed. Login failed for user).
+             
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,5 +48,7 @@ namespace BookAPI.Data
         public DbSet<Publisher> Publishers { get; set; }
         public DbSet<Author> Authors { get; set; }
         //public DbSet<Book_Author> Book_Authors { get; set; }
+   
     }
+
 }

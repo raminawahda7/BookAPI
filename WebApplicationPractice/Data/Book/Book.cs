@@ -31,6 +31,6 @@ namespace BookAPI.Data
         public int? PublisherId { get; set; }
         public Publisher Publisher { get; set; }
 
-        //public virtual List<Author> Authors { get; set; }
+        public ICollection<Author> Authors { get; set; }
     }
 }

@@ -16,6 +16,6 @@ namespace BookAPI.Data
         public string FullName => $"{FirstName} {LastName}";
 
         // Navigations Properties
-        public virtual List<Book> Books { get; set; }
+        public  ICollection<Book> Books { get; set; }
     }
 }

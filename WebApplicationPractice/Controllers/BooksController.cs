@@ -44,6 +44,7 @@ namespace BookAPI
                     Description = item.Description,
                     IsAvailable = item.IsAvailable,
                     Publisher = item.Publisher.Name,
+                    AuthorNames = item.Authors.Select(e => e.FullName).ToList()
                 };
 
                 listOfBookResource.Add(bookResource);
@@ -70,7 +71,7 @@ namespace BookAPI
                 Description = bookFromRepo.Description,
                 IsAvailable = bookFromRepo.IsAvailable,
                 Publisher = bookFromRepo.Publisher.Name,
-                //AuthorNames = bookFromRepo.Authors.Select(e => e.FullName).ToList()
+                AuthorNames = bookFromRepo.Authors.Select(e => e.FullName).ToList()
             };
 
             return Ok(bookResource);
@@ -85,14 +86,20 @@ namespace BookAPI
                 return BadRequest(ModelState);
             }
             // Here map (model) -> entity
+            var authors = _authorRepository.Get().Result.Where(e=> bookModel.AuthorIds.Contains(e.Id)).ToList(); 
+
+            //foreach (var e in authors)
+            //{
+            //    foreach (var num in bookModel.AuthorIds)
+            //        e.Id == num ? authors.Add(e);
+            //}
             var bookEntity = new Book
             {
                 Title = bookModel.Title,
                 Description = bookModel.Description,
                 IsAvailable = bookModel.IsAvailable,
                 PublisherId=bookModel.PublisherId,
-
-                //Authors = bookModel.AuthorIds.Select(id=> new Author { Id = id }).ToList()
+                Authors = authors
             };
 
             // insert this record to database by repo
@@ -106,7 +113,7 @@ namespace BookAPI
                 Description = newBook.Description,
                 IsAvailable = newBook.IsAvailable,
                 Publisher = newBook.Publisher.Name,
-                //AuthorNames = newBook.Authors.Select(e=>  e.FullName ).ToList()
+                AuthorNames = authors.Select(a=>a.FullName).ToList()
             };
 
 

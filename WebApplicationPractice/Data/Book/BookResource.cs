@@ -13,6 +13,6 @@ namespace BookAPI.Data
         public bool IsAvailable { get; set; }
 
         public string Publisher { get; set; }
-        //public List<string> AuthorNames { get; set; }
+        public List<string> AuthorNames { get; set; }
     }
 }

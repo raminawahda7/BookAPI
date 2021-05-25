@@ -47,14 +47,17 @@ namespace BookAPI
                         Description = book.Description,
                         IsAvailable = book.IsAvailable,
                         Publisher = book.Publisher?.Name,
+                        //AuthorNames = book.Authors.Where(e => e.Id==book.Id).Select(e => e.FullName).ToList()
                     };
 
                     listOfBookResource.Add(bookResource);
                 }
                 var publisherResource = new PublisherResource
                 {
+                    Id=item.Id,
                     Name = item.Name,
-                    Books = listOfBookResource
+                    Books = listOfBookResource,
+                    //AuthorNames = 
                 };
 
                 listOfPublisherResource.Add(publisherResource);
@@ -101,7 +104,9 @@ namespace BookAPI
             // Here map (newBook which is Entity) -> Resource
             var publisherResource = new PublisherResource
             {
+                Id=newPublisher.Id,
                 Name = newPublisher.Name,
+
             };
 
 
