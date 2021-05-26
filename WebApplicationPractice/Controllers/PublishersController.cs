@@ -69,10 +69,24 @@ namespace BookAPI
             {
                 return NotFound();
             }
+
+            var resource = new List<PublisherBookResource>();
+            foreach (var book in publisherFromRepo.Books)
+            {
+                resource.Add(new PublisherBookResource
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    Description = book.Description,
+                    IsAvailable = book.IsAvailable,
+                    AuthorNames = book.Authors.Select(e => e.FullName).ToList()
+                });
+            }
             var publisherResource = new PublisherResource
             {
                 Id = publisherFromRepo.Id,
                 Name = publisherFromRepo.Name,
+                Books = resource
             };
 
             return Ok(publisherResource);
