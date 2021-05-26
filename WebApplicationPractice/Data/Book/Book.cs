@@ -15,12 +15,8 @@ namespace BookAPI.Data
         [Required(ErrorMessage ="It's not allowed to be null")]
         [MaxLength(50)]
         public string Title { get; set; }
-        
-        // deleted to be in seaparation Table.
 
-        //[Required]
-        //[MaxLength(50)]
-        //public string Author { get; set; }
+        // deleted to be in seaparation Table.
 
         [MaxLength(150)]
         public string Description { get; set; }

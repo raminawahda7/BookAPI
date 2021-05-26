@@ -57,7 +57,7 @@ namespace BookAPI
         [HttpGet("{id}")]
         public async Task<ActionResult<AuthorResource>> GetAuthors(int id)
         {
-            var authorFromRepo = await _authorRepository?.Get(id);
+            var authorFromRepo = await _authorRepository.Get(id);
             if (authorFromRepo == null)
             {
                 return NotFound();

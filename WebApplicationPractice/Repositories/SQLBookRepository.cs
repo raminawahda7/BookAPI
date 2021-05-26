@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BookAPI.Repositories
 {
-    public class SQLBookRepository : IRepository<Book,int>
+    public class SQLBookRepository : IRepository<Book, int>
     {
         private readonly AppDbContext _Context;
 
@@ -18,11 +18,16 @@ namespace BookAPI.Repositories
         }
         public async Task<Book> Create(Book book)
         {
-             _Context.Book.Add(book);
+            if (book == null)
+            {
+                throw new ArgumentNullException($"{nameof(Create)} entity must not be null");
+            }
+
+            _Context.Book.Add(book);
 
             //_Context.Authors.AttachRange(book.Authors);
             await _Context.SaveChangesAsync();
-            return await _Context.Book.Include(b => b.Publisher).FirstOrDefaultAsync(e => e.Id == book.Id);
+            return await _Context.Book.Include(b => b.Publisher).Include(b => b.Authors).FirstOrDefaultAsync(e => e.Id == book.Id);
         }
 
         public async Task Delete(int id)
@@ -36,19 +41,44 @@ namespace BookAPI.Repositories
 
         public async Task<IEnumerable<Book>> Get()
         {
-            return await _Context.Book.Include(b=>b.Publisher).Include(b => b.Authors).ToListAsync();
+            try
+            {
+                return await _Context.Book.Include(b => b.Publisher).Include(b => b.Authors).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($" Couldn't retrieve book {ex.Message}");
+            }
         }
 
         public async Task<Book> Get(int id)
         {
-            return await _Context.Book.Include(b=>b.Publisher).Include(b => b.Authors).FirstOrDefaultAsync(e=>e.Id==id);
+            try
+            {
+                return await _Context.Book.Include(b => b.Publisher).Include(b => b.Authors).FirstOrDefaultAsync(e => e.Id == id);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($" Couldn't retrieve book {ex.Message}");
+            }
         }
 
         public async Task<Book> Update(Book book)
         {
-            _Context.Entry(book).State = EntityState.Modified;
-            await _Context.SaveChangesAsync();
-            return book;
+            if (book == null)
+            {
+                throw new ArgumentNullException($"{nameof(Update)} entity must not be null");
+            }
+            try
+            {
+                _Context.Entry(book).State = EntityState.Modified;
+                await _Context.SaveChangesAsync();
+                return book;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Couldn't update book :{ex.Message}");
+            }
         }
     }
 }

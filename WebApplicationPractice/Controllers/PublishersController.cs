@@ -28,41 +28,33 @@ namespace BookAPI
             _publisherRepository = publisherRepository;
         }
         [HttpGet]
-        public async Task<IEnumerable<PublisherResource>> GetPublishers(string author)
+        public async Task<IEnumerable<PublisherResource>> GetPublishers(string publisher)
         {
             var entities = await _publisherRepository.Get();
 
             var listOfPublisherResource = new List<PublisherResource>();
-            var listOfBookResource = new List<BookResource>();
-
-
-            foreach (var item in entities)
+            //
+            //code
+            //
+            foreach(var entity in entities)
             {
-                foreach (var book in item.Books)
+                var resource = new PublisherResource();
+                resource.Id = entity.Id;
+                resource.Name = entity.Name;
+                resource.Books = new List<PublisherBookResource>();
+                foreach(var book in entity.Books)
                 {
-                    var bookResource = new BookResource
+                    resource.Books.Add(new PublisherBookResource
                     {
-                        Id = book.Id,
+                        Id= book.Id,
                         Title = book.Title,
                         Description = book.Description,
                         IsAvailable = book.IsAvailable,
-                        Publisher = book.Publisher?.Name,
-                        //AuthorNames = book.Authors.Where(e => e.Id==book.Id).Select(e => e.FullName).ToList()
-                    };
-
-                    listOfBookResource.Add(bookResource);
+                        AuthorNames = book.Authors.Select(e=>e.FullName).ToList()
+                    });
                 }
-                var publisherResource = new PublisherResource
-                {
-                    Id=item.Id,
-                    Name = item.Name,
-                    Books = listOfBookResource,
-                    //AuthorNames = 
-                };
-
-                listOfPublisherResource.Add(publisherResource);
+                listOfPublisherResource.Add(resource);
             }
-            Console.WriteLine(listOfPublisherResource);
             return listOfPublisherResource;
 
         }
@@ -72,13 +64,14 @@ namespace BookAPI
         [HttpGet("{id}")]
         public async Task<ActionResult<PublisherResource>> GetPublishers(int id)
         {
-            var publisherFromRepo = await _publisherRepository?.Get(id);
+            var publisherFromRepo = await _publisherRepository.Get(id);
             if (publisherFromRepo == null)
             {
                 return NotFound();
             }
             var publisherResource = new PublisherResource
             {
+                Id = publisherFromRepo.Id,
                 Name = publisherFromRepo.Name,
             };
 

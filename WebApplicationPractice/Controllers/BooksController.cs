@@ -86,19 +86,16 @@ namespace BookAPI
                 return BadRequest(ModelState);
             }
             // Here map (model) -> entity
-            var authors = _authorRepository.Get().Result.Where(e=> bookModel.AuthorIds.Contains(e.Id)).ToList(); 
+            var authors = _authorRepository.Get().Result.ToList().Where(e=> bookModel.AuthorIds.Contains(e.Id)).ToList();
 
-            //foreach (var e in authors)
-            //{
-            //    foreach (var num in bookModel.AuthorIds)
-            //        e.Id == num ? authors.Add(e);
-            //}
+            if (authors.Count < bookModel.AuthorIds.Count) throw new Exception("Id is not correct");
             var bookEntity = new Book
             {
                 Title = bookModel.Title,
                 Description = bookModel.Description,
                 IsAvailable = bookModel.IsAvailable,
                 PublisherId=bookModel.PublisherId,
+
                 Authors = authors
             };
 
@@ -131,11 +128,15 @@ namespace BookAPI
             // You can make it like Yazan said from his document.
             var bookToUpdate = await _bookRepository?.Get(id);
 
+            var authors = _authorRepository.Get().Result.ToList().Where(e => bookModel.AuthorIds.Contains(e.Id)).ToList();
+
+            if (authors.Count < bookModel.AuthorIds.Count) throw new Exception("Id is not correct");
+
             bookToUpdate.Title = bookModel.Title;
             bookToUpdate.Description = bookModel.Description;
             bookToUpdate.IsAvailable = bookModel.IsAvailable;
             bookToUpdate.PublisherId = bookModel.PublisherId;
-            //bookToUpdate.Authors = bookModel.AuthorIds.Select(id => new Author { Id = id }).ToList();
+            bookToUpdate.Authors = authors;
 
             if (bookToUpdate == null)
                 return NotFound();
@@ -147,7 +148,7 @@ namespace BookAPI
                 Description = bookToUpdate.Description,
                 IsAvailable = bookToUpdate.IsAvailable,
                 Publisher=bookToUpdate.Publisher.Name,
-                //AuthorNames = bookToUpdate.Authors.Select(e=>  e.FullName ).ToList()
+                AuthorNames = authors.Select(a => a.FullName).ToList()
             };
             //JObject obj = (JObject)JToken.FromObject(bookResource);
             //Console.WriteLine(bookResource);
