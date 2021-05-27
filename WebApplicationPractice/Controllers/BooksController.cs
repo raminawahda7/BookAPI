@@ -35,16 +35,28 @@ namespace BookAPI
             //if (author != null)
             //    entities = entities.Where(e => e.Authors.Where(a=>a.FullName==author));
             var listOfBookResource = new List<BookResource>();
+            var listOfAuthorResource = new List<AuthorCreateResource>();
 
             foreach (var item in entities)
             {
-                var bookResource = new BookResource {
+                foreach (var a in item.Authors)
+                {
+                    var authorResource = new AuthorCreateResource
+                    {
+                        Id = a.Id,
+                        FullName = a.FullName
+                    };
+                    listOfAuthorResource.Add(authorResource);
+                }
+                var bookResource = new BookResource
+                {
                     Id = item.Id,
                     Title = item.Title,
                     Description = item.Description,
                     IsAvailable = item.IsAvailable,
                     Publisher = item.Publisher.Name,
-                    AuthorNames = item.Authors.Select(e => e.FullName).ToList()
+                    AuthorNames = listOfAuthorResource
+                    //AuthorNames = item.Authors.Select(e => e.FullName).ToList()
                 };
 
                 listOfBookResource.Add(bookResource);
@@ -64,6 +76,19 @@ namespace BookAPI
             {
                 return NotFound();
             }
+            var listOfAuthorResource = new List<AuthorCreateResource>();
+
+            foreach (var author in bookFromRepo.Authors)
+            {
+                var authorResource = new AuthorCreateResource
+                {
+                    Id = author.Id,
+                    FullName = author.FullName
+                };
+                listOfAuthorResource.Add(authorResource);
+            }
+
+
             var bookResource = new BookResource
             {
                 Id = bookFromRepo.Id,
@@ -71,7 +96,8 @@ namespace BookAPI
                 Description = bookFromRepo.Description,
                 IsAvailable = bookFromRepo.IsAvailable,
                 Publisher = bookFromRepo.Publisher.Name,
-                AuthorNames = bookFromRepo.Authors.Select(e => e.FullName).ToList()
+                AuthorNames = listOfAuthorResource
+                //AuthorNames = bookFromRepo.Authors.Select(e => e.FullName).ToList()
             };
 
             return Ok(bookResource);
@@ -86,21 +112,31 @@ namespace BookAPI
                 return BadRequest(ModelState);
             }
             // Here map (model) -> entity
-            var authors = _authorRepository.Get().Result.ToList().Where(e=> bookModel.AuthorIds.Contains(e.Id)).ToList();
-
+            var authors = _authorRepository.Get().Result.ToList().Where(e => bookModel.AuthorIds.Contains(e.Id)).ToList();
             if (authors.Count < bookModel.AuthorIds.Count) throw new Exception("Id is not correct");
             var bookEntity = new Book
             {
                 Title = bookModel.Title,
                 Description = bookModel.Description,
                 IsAvailable = bookModel.IsAvailable,
-                PublisherId=bookModel.PublisherId,
-
+                PublisherId = bookModel.PublisherId,
                 Authors = authors
             };
 
             // insert this record to database by repo
             var newBook = await _bookRepository.Create(bookEntity);
+            // map author list into book resource
+            var listOfAuthorResource = new List<AuthorCreateResource>();
+
+            foreach (var author in authors)
+            {
+                var authorResource = new AuthorCreateResource
+                {
+                    Id = author.Id,
+                    FullName = author.FullName
+                };
+                listOfAuthorResource.Add(authorResource);
+            }
 
             // Here map (newBook which is Entity) -> Resource
             var bookResource = new BookResource
@@ -110,7 +146,7 @@ namespace BookAPI
                 Description = newBook.Description,
                 IsAvailable = newBook.IsAvailable,
                 Publisher = newBook.Publisher.Name,
-                AuthorNames = authors.Select(a=>a.FullName).ToList()
+                AuthorNames = listOfAuthorResource
             };
 
 
@@ -126,7 +162,10 @@ namespace BookAPI
                 return BadRequest(ModelState);
             }
             // You can make it like Yazan said from his document.
-            var bookToUpdate = await _bookRepository?.Get(id);
+            var bookToUpdate = await _bookRepository.Get(id);
+
+            if (bookToUpdate == null)
+                return NotFound();
 
             var authors = _authorRepository.Get().Result.ToList().Where(e => bookModel.AuthorIds.Contains(e.Id)).ToList();
 
@@ -141,14 +180,27 @@ namespace BookAPI
             if (bookToUpdate == null)
                 return NotFound();
             await _bookRepository.Update(bookToUpdate);
+            // map authors list into book resource
+            var listOfAuthorResource = new List<AuthorCreateResource>();
+
+            foreach (var author in authors)
+            {
+                var authorResource = new AuthorCreateResource
+                {
+                    Id = author.Id,
+                    FullName = author.FullName
+                };
+                listOfAuthorResource.Add(authorResource);
+            }
+
             var bookResource = new BookResource
             {
                 Id = bookToUpdate.Id,
                 Title = bookToUpdate.Title,
                 Description = bookToUpdate.Description,
                 IsAvailable = bookToUpdate.IsAvailable,
-                Publisher=bookToUpdate.Publisher.Name,
-                AuthorNames = authors.Select(a => a.FullName).ToList()
+                Publisher = bookToUpdate.Publisher.Name,
+                AuthorNames = listOfAuthorResource
             };
             //JObject obj = (JObject)JToken.FromObject(bookResource);
             //Console.WriteLine(bookResource);
@@ -165,7 +217,7 @@ namespace BookAPI
             await _bookRepository.Delete(bookToDelete.Id);
             return NoContent();
         }
-        
-        
+
+
     }
 }

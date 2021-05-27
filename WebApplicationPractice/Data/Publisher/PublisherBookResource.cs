@@ -12,7 +12,7 @@ namespace BookAPI.Data
             public string Description { get; set; }
             public bool IsAvailable { get; set; }
 
-            public List<string> AuthorNames { get; set; }
+            public List<AuthorCreateResource> AuthorNames { get; set; }
   
     }
 }

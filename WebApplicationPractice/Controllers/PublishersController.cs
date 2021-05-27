@@ -36,7 +36,9 @@ namespace BookAPI
             //
             //code
             //
-            foreach(var entity in entities)
+            var listOfAuthorResource = new List<AuthorCreateResource>();
+
+            foreach (var entity in entities)
             {
                 var resource = new PublisherResource();
                 resource.Id = entity.Id;
@@ -44,19 +46,27 @@ namespace BookAPI
                 resource.Books = new List<PublisherBookResource>();
                 foreach(var book in entity.Books)
                 {
+                    foreach (var a in book.Authors)
+                    {
+                        var authorResource = new AuthorCreateResource
+                        {
+                            Id = a.Id,
+                            FullName = a.FullName
+                        };
+                        listOfAuthorResource.Add(authorResource);
+                    }
                     resource.Books.Add(new PublisherBookResource
                     {
                         Id= book.Id,
                         Title = book.Title,
                         Description = book.Description,
                         IsAvailable = book.IsAvailable,
-                        AuthorNames = book.Authors.Select(e=>e.FullName).ToList()
+                        AuthorNames = listOfAuthorResource
                     });
                 }
                 listOfPublisherResource.Add(resource);
             }
             return listOfPublisherResource;
-
         }
 
 
@@ -79,7 +89,7 @@ namespace BookAPI
                     Title = book.Title,
                     Description = book.Description,
                     IsAvailable = book.IsAvailable,
-                    AuthorNames = book.Authors.Select(e => e.FullName).ToList()
+                    //AuthorNames = book.Authors.Select(e => e.FullName).ToList()
                 });
             }
             var publisherResource = new PublisherResource
@@ -109,11 +119,10 @@ namespace BookAPI
             var newPublisher = await _publisherRepository.Create(publisherEntity);
 
             // Here map (newBook which is Entity) -> Resource
-            var publisherResource = new PublisherResource
+            var publisherResource = new PublisherCreateResource
             {
                 Id=newPublisher.Id,
                 Name = newPublisher.Name,
-
             };
 
 
@@ -131,11 +140,11 @@ namespace BookAPI
             // You can make it like Yazan said from his document.
             var publisherToUpdate = await _publisherRepository?.Get(id);
 
+            if (publisherToUpdate == null)
+                return NotFound();
+
             publisherToUpdate.Name = publisherModel.Name;
 
-
-            if (publisherModel == null)
-                return NotFound();
             await _publisherRepository.Update(publisherToUpdate);
             var publisherResource = new PublisherResource
             {
@@ -150,11 +159,15 @@ namespace BookAPI
         public async Task<ActionResult> Delete(int id)
         {
             var publisherToDelete = await _publisherRepository.Get(id);
+
             if (publisherToDelete == null)
                 return NotFound();
-
+            if (publisherToDelete.Books.Count==0)
+            {
             await _publisherRepository.Delete(publisherToDelete.Id);
             return NoContent();
+            }
+            return BadRequest("Can't delete publisher has book");
         }
 
 

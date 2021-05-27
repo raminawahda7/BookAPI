@@ -1,4 +1,5 @@
 ﻿using BookAPI.Data;
+using BookAPI.Data;
 using BookAPI.Repositories;
 using BookAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -33,21 +34,28 @@ namespace BookAPI
         public async Task<IEnumerable<AuthorResource>> GetAuthors(string author)
         {
             var entities = await _authorRepository.Get();
-            //if (author != null)
-            //    entities = entities.Where(e => e.Author.Contains(author));
             var listOfAuthorResource = new List<AuthorResource>();
 
-            foreach (var item in entities)
+            //if (author != null)
+            //    entities = entities.Where(e => e.Author.Contains(author));
+            foreach (var entity in entities)
             {
-                var authorResource = new AuthorResource {
-                    Id = item.Id,
-                    FullName = item.FullName,
-                    BookTitles = item.Books.Select(e => e.Title).ToList()
-                };
-
-                listOfAuthorResource.Add(authorResource);
+                var resource = new AuthorResource();
+                resource.Id = entity.Id;
+                resource.FullName = entity.FullName;
+                resource.Books = new List<BookAuthorResource>();
+                foreach (var book in entity.Books)
+                {
+                    resource.Books.Add(new BookAuthorResource
+                    {
+                        Id = book.Id,
+                        Title = book.Title,
+                        Description = book.Description,
+                        IsAvailable = book.IsAvailable,
+                    });
+                }
+                listOfAuthorResource.Add(resource);
             }
-            Console.WriteLine(listOfAuthorResource);
             return listOfAuthorResource;
 
         }
@@ -68,7 +76,7 @@ namespace BookAPI
             {
                 Id = authorFromRepo.Id,
                 FullName = authorFromRepo.FullName,
-                BookTitles = authorFromRepo.Books.Select(e => e.Title).ToList()
+                //BookTitles = authorFromRepo.Books.Select(e => e.Title).ToList()
             };
 
             return Ok(authorResource);
@@ -76,7 +84,7 @@ namespace BookAPI
 
 
         [HttpPost]
-        public async Task<ActionResult<AuthorResource>> PostAuthor([FromBody] AuthorModel authorModel)
+        public async Task<ActionResult<AuthorCreateResource>> PostAuthor([FromBody] AuthorModel authorModel)
         {
             if (!ModelState.IsValid)
             {
@@ -93,11 +101,10 @@ namespace BookAPI
             var newAuthor = await _authorRepository.Create(authorEntity);
 
             // Here map (newBook which is Entity) -> Resource
-            var authorResource = new AuthorResource
+            var authorResource = new AuthorCreateResource
             {
                 Id = newAuthor.Id,
                 FullName = newAuthor.FullName,
-
             };
 
 
@@ -113,14 +120,15 @@ namespace BookAPI
                 return BadRequest(ModelState);
             }
             // You can make it like Yazan said from his document.
-            var authorToUpdate = await _authorRepository?.Get(id);
+            var authorToUpdate = await _authorRepository.Get(id);
+
+            if (authorToUpdate == null)
+                return NotFound();
 
             authorToUpdate.FirstName = authorModel.FirstName;
             authorToUpdate.LastName = authorModel.LastName;
 
 
-            if (authorToUpdate == null)
-                return NotFound();
             await _authorRepository.Update(authorToUpdate);
             var authorResource = new AuthorResource
             {

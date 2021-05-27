@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookAPI.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace BookAPI.Data
     {
         public int Id { get; set; }
         public string FullName { get; set; }
-        public List<string> BookTitles { get; set; }
+        public List<BookAuthorResource> Books { get; set; }
     }
 }
 // IF YOU WANT TO RETURN BOOKS FOR SPECIFIC AUTHOR ----> YOU HAVE TO CREATE A NEW RESOURCE:

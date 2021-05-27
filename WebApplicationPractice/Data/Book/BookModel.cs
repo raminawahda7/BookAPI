@@ -15,6 +15,7 @@ namespace BookAPI.Data
         public string Description { get; set; }
         public bool IsAvailable { get; set; }
 
+        [Required(ErrorMessage = "The field {0} is required")]
         public int PublisherId { get; set; }
         public List<int> AuthorIds { get; set; }
 
