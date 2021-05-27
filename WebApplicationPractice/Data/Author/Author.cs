@@ -14,6 +14,7 @@ namespace BookAPI.Data
         [MaxLength(50)]
         public string FirstName { get; set; }
 
+        [MaxLength(50)]
         public string LastName { get; set; }
 
         public string FullName => $"{FirstName} {LastName}";

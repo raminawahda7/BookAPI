@@ -9,7 +9,7 @@ namespace BookAPI.Data
 {
     public class Book
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { get; set; }
 
         [Required(ErrorMessage ="It's not allowed to be null")]

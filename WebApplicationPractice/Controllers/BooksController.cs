@@ -33,7 +33,7 @@ namespace BookAPI
             // To-Do: implement author parameter
             var entities = await _bookRepository.Get();
             //if (author != null)
-            //    entities = entities.Where(e => e.Authors.Contains(author));
+            //    entities = entities.Where(e => e.Authors.Where(a=>a.FullName==author));
             var listOfBookResource = new List<BookResource>();
 
             foreach (var item in entities)
