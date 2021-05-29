@@ -55,7 +55,8 @@ namespace BookAPI
                     Description = item.Description,
                     IsAvailable = item.IsAvailable,
                     Publisher = item.Publisher.Name,
-                    AuthorNames = listOfAuthorResource
+                    PublishedDate = item.PublishedDate,
+                    AuthorNames = listOfAuthorResource,
                     //AuthorNames = item.Authors.Select(e => e.FullName).ToList()
                 };
 
@@ -96,6 +97,7 @@ namespace BookAPI
                 Description = bookFromRepo.Description,
                 IsAvailable = bookFromRepo.IsAvailable,
                 Publisher = bookFromRepo.Publisher.Name,
+                PublishedDate = bookFromRepo.PublishedDate,
                 AuthorNames = listOfAuthorResource
                 //AuthorNames = bookFromRepo.Authors.Select(e => e.FullName).ToList()
             };
@@ -146,6 +148,7 @@ namespace BookAPI
                 Description = newBook.Description,
                 IsAvailable = newBook.IsAvailable,
                 Publisher = newBook.Publisher.Name,
+                PublishedDate = newBook.PublishedDate,
                 AuthorNames = listOfAuthorResource
             };
 
@@ -175,6 +178,7 @@ namespace BookAPI
             bookToUpdate.Description = bookModel.Description;
             bookToUpdate.IsAvailable = bookModel.IsAvailable;
             bookToUpdate.PublisherId = bookModel.PublisherId;
+            bookToUpdate.PublishedDate = bookModel.PublishedDate;
             bookToUpdate.Authors = authors;
 
             if (bookToUpdate == null)
@@ -200,6 +204,7 @@ namespace BookAPI
                 Description = bookToUpdate.Description,
                 IsAvailable = bookToUpdate.IsAvailable,
                 Publisher = bookToUpdate.Publisher.Name,
+                PublishedDate = bookToUpdate.PublishedDate,
                 AuthorNames = listOfAuthorResource
             };
             //JObject obj = (JObject)JToken.FromObject(bookResource);

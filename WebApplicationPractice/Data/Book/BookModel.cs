@@ -17,6 +17,10 @@ namespace BookAPI.Data
 
         [Required(ErrorMessage = "The field {0} is required")]
         public int PublisherId { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime PublishedDate { get; set; }
         public List<int> AuthorIds { get; set; }
 
     }

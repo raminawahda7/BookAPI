@@ -13,6 +13,7 @@ namespace BookAPI.Data
         public bool IsAvailable { get; set; }
 
         public string Publisher { get; set; }
+        public DateTime PublishedDate { get; set; }
         public List<AuthorCreateResource> AuthorNames { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using BookAPI.Data;
-using BookAPI.Data;
 using BookAPI.Repositories;
 using BookAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -43,6 +42,8 @@ namespace BookAPI
                 var resource = new AuthorResource();
                 resource.Id = entity.Id;
                 resource.FullName = entity.FullName;
+                resource.Age = entity.Age;
+                resource.Email = entity.Email;
                 resource.Books = new List<BookAuthorResource>();
                 foreach (var book in entity.Books)
                 {
@@ -76,6 +77,8 @@ namespace BookAPI
             {
                 Id = authorFromRepo.Id,
                 FullName = authorFromRepo.FullName,
+                Age=authorFromRepo.Age,
+                Email = authorFromRepo.Email
                 //BookTitles = authorFromRepo.Books.Select(e => e.Title).ToList()
             };
 
@@ -95,7 +98,8 @@ namespace BookAPI
             {
                 FirstName = authorModel.FirstName,
                 LastName = authorModel.LastName,
-
+                Email = authorModel.Email,
+                Age = authorModel.Age
             };
             // Entity from Book
             var newAuthor = await _authorRepository.Create(authorEntity);
@@ -105,6 +109,9 @@ namespace BookAPI
             {
                 Id = newAuthor.Id,
                 FullName = newAuthor.FullName,
+                //Age = newAuthor.Age,
+                //Email = newAuthor.Email
+
             };
 
 
@@ -113,7 +120,7 @@ namespace BookAPI
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<AuthorResource>> PutAuthor(int id, [FromBody] AuthorModel authorModel)
+        public async Task<ActionResult<AuthorCreateResource>> PutAuthor(int id, [FromBody] AuthorModel authorModel)
         {
             if (!ModelState.IsValid)
             {
@@ -127,13 +134,17 @@ namespace BookAPI
 
             authorToUpdate.FirstName = authorModel.FirstName;
             authorToUpdate.LastName = authorModel.LastName;
+            authorToUpdate.Email = authorModel.Email;
+            authorToUpdate.Age = authorModel.Age;
 
 
             await _authorRepository.Update(authorToUpdate);
-            var authorResource = new AuthorResource
+            var authorResource = new AuthorCreateResource
             {
                 Id = authorToUpdate.Id,
                 FullName = authorToUpdate.FullName,
+                //Age = authorToUpdate.Age,
+                //Email = authorToUpdate.Email
             };
             //JObject obj = (JObject)JToken.FromObject(bookResource);
             //Console.WriteLine(bookResource);

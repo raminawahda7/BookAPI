@@ -27,6 +27,10 @@ namespace BookAPI.Data
         public int? PublisherId { get; set; }
         public Publisher Publisher { get; set; }
 
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        public DateTime PublishedDate { get; set; }
+
         public ICollection<Author> Authors { get; set; }
     }
 }
