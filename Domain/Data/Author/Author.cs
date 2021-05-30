@@ -21,11 +21,10 @@ namespace BookAPI.Data
 
         [DataType(DataType.EmailAddress)]
         [EmailAddress]
-        //[RegularExpression(@"^[A-Za-z0-9](([_\.\-]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\.\-‌​]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})$", ErrorMessage = "Email is not valid")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         [Range(1, 120)]
-        public int Age { get; set; }
+        public int? Age { get; set; }
 
         // Navigations Properties
         public ICollection<Book> Books { get; set; }

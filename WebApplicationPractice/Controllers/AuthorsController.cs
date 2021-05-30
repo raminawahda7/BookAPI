@@ -56,7 +56,7 @@ namespace BookAPI
             {
                 Id = authorFromRepo.Id,
                 FullName = authorFromRepo.FullName,
-                Age=authorFromRepo.Age,
+                Age = authorFromRepo.Age,
                 Email = authorFromRepo.Email
                 //BookTitles = authorFromRepo.Books.Select(e => e.Title).ToList()
             };
@@ -73,19 +73,17 @@ namespace BookAPI
                 return BadRequest(ModelState);
             }
             // Here map (model) -> entity
-
+          
             var authorEntity = new Author
             {
                 FirstName = authorModel.FirstName,
                 LastName = authorModel.LastName,
                
             };
-            if (authorModel.Email == null &&  authorModel.Age.Equals(0))
-                return BadRequest(ModelState);
-            if (authorModel.Email != null)
-                authorEntity.Email = authorModel.Email;
-            if (authorModel.Age != 0)
-                authorEntity.Age = authorModel.Age;
+            if (authorModel.Email == null &&  authorModel.Age == null)
+                return BadRequest("At least some name must be added");
+            authorEntity.Email = authorModel.Email;
+            authorEntity.Age = authorModel.Age;
             // Entity from Book
             var newAuthor = await _authorRepository.Create(authorEntity);
 
@@ -96,7 +94,6 @@ namespace BookAPI
                 FullName = newAuthor.FullName,
                 //Age = newAuthor.Age,
                 //Email = newAuthor.Email
-
             };
 
 
