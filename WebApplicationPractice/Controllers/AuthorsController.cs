@@ -73,6 +73,7 @@ namespace BookAPI
                 return BadRequest(ModelState);
             }
             // Here map (model) -> entity
+
             var authorEntity = new Author
             {
                 FirstName = authorModel.FirstName,
