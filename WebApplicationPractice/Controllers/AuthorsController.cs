@@ -78,9 +78,14 @@ namespace BookAPI
             {
                 FirstName = authorModel.FirstName,
                 LastName = authorModel.LastName,
-                Email = authorModel.Email,
-                Age = authorModel.Age
+               
             };
+            if (authorModel.Email == null &&  authorModel.Age.Equals(0))
+                return BadRequest(ModelState);
+            if (authorModel.Email != null)
+                authorEntity.Email = authorModel.Email;
+            if (authorModel.Age != 0)
+                authorEntity.Age = authorModel.Age;
             // Entity from Book
             var newAuthor = await _authorRepository.Create(authorEntity);
 
