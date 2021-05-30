@@ -30,11 +30,14 @@ namespace BookAPI
         // TO-Do: add a new author_resource contains List of Book-Titles field.
         // Then change the resource for GetAuthors to return authors with what they wrote :)
         [HttpGet]
-        public async Task<IEnumerable<AuthorResource>> GetAuthors()
+        public async Task<IEnumerable<AuthorResource>> GetAuthors(string author)
         {
             var entities = await _authorRepository.Get();
+            if (author != null)
+            {
+                entities = entities.Where(e => e.FullName.Contains(author));
+            }
             return entities.AuthorBookResource();
-
         }
 
 

@@ -29,13 +29,18 @@ namespace BookAPI
             _publisherRepository = publisherRepository;
         }
         [HttpGet]
-        public async Task<IEnumerable<BookResource>> GetBooks(string author)
+        public async Task<IEnumerable<BookResource>> GetBooks(string book)
         {
             // To-Do: implement author parameter
             var entities = await _bookRepository.Get();
+            if (book != null)
+            {
+                //entities = entities.Where(e => e.Title.Contains(book));
+                entities = entities.Where(e => e.Authors.Where(a=>a.FullName.Contains(book)));
+            }
             //if (author != null)
             //    entities = entities.Where(e => e.Authors.Where(a=>a.FullName==author));
-            
+
             return entities.BookAuthorResource();
 
         }
@@ -45,7 +50,7 @@ namespace BookAPI
         [HttpGet("{id}")]
         public async Task<ActionResult<BookResource>> GetBooks(int id)
         {
-            var bookFromRepo = await _bookRepository?.Get(id);
+            var bookFromRepo = await _bookRepository.Get(id);
             if (bookFromRepo == null)
             {
                 return NotFound();
