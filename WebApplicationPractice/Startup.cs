@@ -27,7 +27,7 @@ namespace BookAPI
         {
             //services.AddScoped<IBookRepository, BookRepository>();
 
-            services.AddDbContextPool<AppDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("BookDBConnection")));
+            services.AddDbContextPool<AppDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("BookDBConnection"), b => b.MigrationsAssembly("BookAPI").UseNetTopologySuite()));
             services.AddControllers();
             services.AddSwaggerGen(c =>
 
