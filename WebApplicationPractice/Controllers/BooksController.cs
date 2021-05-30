@@ -1,4 +1,5 @@
 ﻿using BookAPI.Data;
+using BookAPI.Helper;
 using BookAPI.Repositories;
 using BookAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -34,36 +35,8 @@ namespace BookAPI
             var entities = await _bookRepository.Get();
             //if (author != null)
             //    entities = entities.Where(e => e.Authors.Where(a=>a.FullName==author));
-            var listOfBookResource = new List<BookResource>();
-            var listOfAuthorResource = new List<AuthorCreateResource>();
-
-            foreach (var item in entities)
-            {
-                foreach (var a in item.Authors)
-                {
-                    var authorResource = new AuthorCreateResource
-                    {
-                        Id = a.Id,
-                        FullName = a.FullName
-                    };
-                    listOfAuthorResource.Add(authorResource);
-                }
-                var bookResource = new BookResource
-                {
-                    Id = item.Id,
-                    Title = item.Title,
-                    Description = item.Description,
-                    IsAvailable = item.IsAvailable,
-                    Publisher = item.Publisher.Name,
-                    PublishedDate = item.PublishedDate,
-                    AuthorNames = listOfAuthorResource,
-                    //AuthorNames = item.Authors.Select(e => e.FullName).ToList()
-                };
-
-                listOfBookResource.Add(bookResource);
-            }
-            Console.WriteLine(listOfBookResource);
-            return listOfBookResource;
+            
+            return entities.BookAuthorResource();
 
         }
 
@@ -116,12 +89,14 @@ namespace BookAPI
             // Here map (model) -> entity
             var authors = _authorRepository.Get().Result.ToList().Where(e => bookModel.AuthorIds.Contains(e.Id)).ToList();
             if (authors.Count < bookModel.AuthorIds.Count) throw new Exception("Id is not correct");
+            
             var bookEntity = new Book
             {
                 Title = bookModel.Title,
                 Description = bookModel.Description,
                 IsAvailable = bookModel.IsAvailable,
                 PublisherId = bookModel.PublisherId,
+                PublishedDate = bookModel.PublishedDate,
                 Authors = authors
             };
 

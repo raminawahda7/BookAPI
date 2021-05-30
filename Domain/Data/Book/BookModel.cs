@@ -1,36 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BookAPI.Data  
+namespace BookAPI.Data
 {
-    public class Book
+    public class BookModel
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        [MaxLength(50)]
+        [Required(ErrorMessage = "The field {0} is required")]
+        [StringLength(150, ErrorMessage = "The field {0} must be between {2} and {1} characters", MinimumLength = 2)] 
         public string Title { get; set; }
 
-        // deleted to be in seaparation Table.
-
-        [MaxLength(150)]
         public string Description { get; set; }
-
         public bool IsAvailable { get; set; }
 
-        // Navigation properties - > add foreign key
-        public int? PublisherId { get; set; }
-        public Publisher Publisher { get; set; }
+        [Required(ErrorMessage = "The field {0} is required")]
+        public int PublisherId { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime PublishedDate { get; set; }
+        public List<int> AuthorIds { get; set; }
 
-        public ICollection<Author> Authors { get; set; }
     }
+
 }

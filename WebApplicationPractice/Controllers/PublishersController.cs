@@ -1,4 +1,5 @@
 ﻿using BookAPI.Data;
+using BookAPI.Helper;
 using BookAPI.Repositories;
 using BookAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -32,41 +33,7 @@ namespace BookAPI
         {
             var entities = await _publisherRepository.Get();
 
-            var listOfPublisherResource = new List<PublisherResource>();
-            //
-            //code
-            //
-            var listOfAuthorResource = new List<AuthorCreateResource>();
-
-            foreach (var entity in entities)
-            {
-                var resource = new PublisherResource();
-                resource.Id = entity.Id;
-                resource.Name = entity.Name;
-                resource.Books = new List<PublisherBookResource>();
-                foreach(var book in entity.Books)
-                {
-                    foreach (var a in book.Authors)
-                    {
-                        var authorResource = new AuthorCreateResource
-                        {
-                            Id = a.Id,
-                            FullName = a.FullName
-                        };
-                        listOfAuthorResource.Add(authorResource);
-                    }
-                    resource.Books.Add(new PublisherBookResource
-                    {
-                        Id= book.Id,
-                        Title = book.Title,
-                        Description = book.Description,
-                        IsAvailable = book.IsAvailable,
-                        AuthorNames = listOfAuthorResource
-                    });
-                }
-                listOfPublisherResource.Add(resource);
-            }
-            return listOfPublisherResource;
+            return entities.PublisherBookResource();
         }
 
 

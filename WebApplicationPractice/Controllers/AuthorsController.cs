@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using BookAPI.Helper;
 namespace BookAPI
 {
     [Route("api/[controller]")]
@@ -30,34 +30,10 @@ namespace BookAPI
         // TO-Do: add a new author_resource contains List of Book-Titles field.
         // Then change the resource for GetAuthors to return authors with what they wrote :)
         [HttpGet]
-        public async Task<IEnumerable<AuthorResource>> GetAuthors(string author)
+        public async Task<IEnumerable<AuthorResource>> GetAuthors()
         {
             var entities = await _authorRepository.Get();
-            var listOfAuthorResource = new List<AuthorResource>();
-
-            //if (author != null)
-            //    entities = entities.Where(e => e.Author.Contains(author));
-            foreach (var entity in entities)
-            {
-                var resource = new AuthorResource();
-                resource.Id = entity.Id;
-                resource.FullName = entity.FullName;
-                resource.Age = entity.Age;
-                resource.Email = entity.Email;
-                resource.Books = new List<BookAuthorResource>();
-                foreach (var book in entity.Books)
-                {
-                    resource.Books.Add(new BookAuthorResource
-                    {
-                        Id = book.Id,
-                        Title = book.Title,
-                        Description = book.Description,
-                        IsAvailable = book.IsAvailable,
-                    });
-                }
-                listOfAuthorResource.Add(resource);
-            }
-            return listOfAuthorResource;
+            return entities.AuthorBookResource();
 
         }
 
