@@ -29,13 +29,17 @@ namespace BookAPI
             _publisherRepository = publisherRepository;
         }
         [HttpGet]
-        public async Task<IEnumerable<BookResource>> GetBooks(string author)
+        public async Task<IEnumerable<BookResource>> GetBooks(string book,string author)
         {
             // To-Do: implement author parameter
             var entities = await _bookRepository.Get();
-            //if (author != null)
-            //    entities = entities.Where(e => e.Authors.Where(a=>a.FullName==author));
-            
+
+            if (book != null && author == null)
+                entities = entities.Where(e => e.Title.Equals(book));
+           
+            if (book == null && author != null)
+                entities = entities.Where(e => e.Authors.Where(a => a.FullName.Equals(author)).Count() != 0);
+
             return entities.BookAuthorResource();
 
         }
@@ -45,7 +49,7 @@ namespace BookAPI
         [HttpGet("{id}")]
         public async Task<ActionResult<BookResource>> GetBooks(int id)
         {
-            var bookFromRepo = await _bookRepository?.Get(id);
+            var bookFromRepo = await _bookRepository.Get(id);
             if (bookFromRepo == null)
             {
                 return NotFound();
@@ -89,7 +93,7 @@ namespace BookAPI
             // Here map (model) -> entity
             var authors = _authorRepository.Get().Result.ToList().Where(e => bookModel.AuthorIds.Contains(e.Id)).ToList();
             if (authors.Count < bookModel.AuthorIds.Count) throw new Exception("Id is not correct");
-            
+
             var bookEntity = new Book
             {
                 Title = bookModel.Title,

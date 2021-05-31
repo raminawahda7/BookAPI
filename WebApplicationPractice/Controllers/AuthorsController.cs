@@ -1,4 +1,5 @@
 ﻿using BookAPI.Data;
+using BookAPI.Helper;
 using BookAPI.Repositories;
 using BookAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BookAPI.Helper;
 namespace BookAPI
 {
     [Route("api/[controller]")]
@@ -30,11 +30,14 @@ namespace BookAPI
         // TO-Do: add a new author_resource contains List of Book-Titles field.
         // Then change the resource for GetAuthors to return authors with what they wrote :)
         [HttpGet]
-        public async Task<IEnumerable<AuthorResource>> GetAuthors()
+        public async Task<IEnumerable<AuthorResource>> GetAuthors(string author)
         {
             var entities = await _authorRepository.Get();
+            if (author != null)
+            {
+                entities = entities.Where(e => e.FullName.Contains(author));
+            }
             return entities.AuthorBookResource();
-
         }
 
 
@@ -53,7 +56,7 @@ namespace BookAPI
             {
                 Id = authorFromRepo.Id,
                 FullName = authorFromRepo.FullName,
-                Age=authorFromRepo.Age,
+                Age = authorFromRepo.Age,
                 Email = authorFromRepo.Email
                 //BookTitles = authorFromRepo.Books.Select(e => e.Title).ToList()
             };
@@ -70,13 +73,17 @@ namespace BookAPI
                 return BadRequest(ModelState);
             }
             // Here map (model) -> entity
+          
             var authorEntity = new Author
             {
                 FirstName = authorModel.FirstName,
                 LastName = authorModel.LastName,
-                Email = authorModel.Email,
-                Age = authorModel.Age
+               
             };
+            if (authorModel.Email == null &&  authorModel.Age == null)
+                return BadRequest("At least some name must be added");
+            authorEntity.Email = authorModel.Email;
+            authorEntity.Age = authorModel.Age;
             // Entity from Book
             var newAuthor = await _authorRepository.Create(authorEntity);
 
@@ -87,7 +94,6 @@ namespace BookAPI
                 FullName = newAuthor.FullName,
                 //Age = newAuthor.Age,
                 //Email = newAuthor.Email
-
             };
 
 

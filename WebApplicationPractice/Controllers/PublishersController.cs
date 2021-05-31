@@ -71,7 +71,7 @@ namespace BookAPI
 
 
         [HttpPost]
-        public async Task<ActionResult<PublisherResource>> PostPubliser([FromBody] PublisherModel publisherModel)
+        public async Task<ActionResult<PublisherCreateResource>> PostPubliser([FromBody] PublisherModel publisherModel)
         {
             if (!ModelState.IsValid)
             {
@@ -98,14 +98,14 @@ namespace BookAPI
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<PublisherResource>> PutPublihser(int id, [FromBody] PublisherModel publisherModel)
+        public async Task<ActionResult<PublisherCreateResource>> PutPublihser(int id, [FromBody] PublisherModel publisherModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             // You can make it like Yazan said from his document.
-            var publisherToUpdate = await _publisherRepository?.Get(id);
+            var publisherToUpdate = await _publisherRepository.Get(id);
 
             if (publisherToUpdate == null)
                 return NotFound();
@@ -113,12 +113,11 @@ namespace BookAPI
             publisherToUpdate.Name = publisherModel.Name;
 
             await _publisherRepository.Update(publisherToUpdate);
-            var publisherResource = new PublisherResource
+            var publisherResource = new PublisherCreateResource
             {
+                Id = publisherToUpdate.Id,
                 Name = publisherToUpdate.Name,
             };
-            //JObject obj = (JObject)JToken.FromObject(bookResource);
-            //Console.WriteLine(bookResource);
             return Ok(publisherResource);
         }
 
