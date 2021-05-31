@@ -18,5 +18,5 @@ export class ConfirmationDialogService {
             modalRef.componentInstance.btnOkText = btnOkText;
             modalRef.componentInstance.btnCancelText = btnCancelText;
             return modalRef.result;
-    
+        }
 }
