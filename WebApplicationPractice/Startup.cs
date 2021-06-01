@@ -43,7 +43,7 @@ namespace BookAPI
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
                 );
 
-
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,6 +62,9 @@ namespace BookAPI
 
             app.UseAuthorization();
 
+            app.UseCors(x =>
+                x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+            );
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
