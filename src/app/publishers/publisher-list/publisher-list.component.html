@@ -1,18 +1,28 @@
 <div class="jumbtron">
-    <h1 class="display-4 text-center">Publishers</h1>
+  <h1 class="display-4 text-center">Publishers</h1>
 </div>
 <div class="col-md-12">
-    <button type="button" class="btn btn-success" (click)="addPublisher()">New Publisher</button>
-    <!-- add publisher click from ts -->
-    <hr />
-    <!-- for search div  -->
-    <div class="table table-condensed table-striped table-hover">
-        <thead>
-            <tr>
-                <th class="col-md-7"> Publisher</th>
-                <th>Options</th>
-            </tr>
-        </thead>
-        <!-- tbody conatains -->
-    </div>
+  <button type="button" class="btn btn-success" (click)="addPublisher()">
+    New Publisher
+  </button>
+  <hr />
+   <!-- Here you can add search div. -->
+  <div class="table table-condensed table-striped table-hover">
+    <thead>
+      <tr>
+        <th id="publisher" class="col-md-7">Publisher</th>
+        <th id="options">Options</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let publisher of publishers">
+            <td>{{publisher.name}}</td>
+            <td class="action-button-column">
+                <a title="Edit" (click)="editPublisher(publisher.id)"> <i class="fas fa-edit"></i></a>
+                <a title="Delete" (click)="deletePublisher(publisher.id)" style="margin-left: 12px;"> <i class="fas fa-trash-alt"></i></a>
+            </td>
+        </tr>
+    </tbody>
+    <!-- tbody conatains -->
+  </div>
 </div>

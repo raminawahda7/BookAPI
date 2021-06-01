@@ -22,8 +22,25 @@ export class PublisherComponent implements OnInit {
 
   ngOnInit(): void {
     // reset form
+    this.resetFrom();
     // getPublisher by id if it's not null
+    let id;
+    this.route.params.subscribe((params) => {
+      id = params['id'];
+    });
     // SO > use router.params
+    if (id != null) {
+      this.service.getPublisherById(id).subscribe(
+        (publisher) => {
+          this.formData = publisher;
+        },
+        (error) => {
+          this.toaster.error('An error occurred on get record.');
+        }
+      );
+    } else {
+      this.resetFrom();
+    }
   }
   //ResetForm-OnSubmit - insertRecord - updateRecord - Cancel
   private resetFrom(form?: NgForm) {
@@ -36,28 +53,41 @@ export class PublisherComponent implements OnInit {
     };
   }
 
-  public onSubmit(form: NgForm) {}
-  
-  public insertRecord(form: NgForm) {
-    this.service.addPublisher(form.form.value).subscribe(() => {
-      this.toaster.success('Registration Success');
-      this.resetFrom(form);
-      this.router.navigate(['/publishers'])
-    },()=>{
-      this.toaster.error('An error occurred on insert the record');
-    });
-  }
-  public updateRecord(form:NgForm){
-    this.service.updatePublisher(form.form.value.id,form.form.value).subscribe(()=>{
-      this.toaster.success('Updated Successfully');
-      this.resetFrom(form);
-      this.router.navigate(['/publishers'])
-    },()=>{
-      this.toaster.error('An error occurred on insert the record');
-    });
+  public onSubmit(form: NgForm) {
+    if(form.value.id===0){
+      this.insertRecord(form);
+    }else{
+      this.updateRecord(form);
+    }
+
   }
 
-  public cancel(){
-    this.router.navigate(['/publishers'])
+  public insertRecord(form: NgForm) {
+    this.service.addPublisher(form.form.value).subscribe(
+      () => {
+        this.toaster.success('Registration Success');
+        this.resetFrom(form);
+        this.router.navigate(['/publishers']);
+      },
+      () => {
+        this.toaster.error('An error occurred on insert the record');
+      }
+    );
+  }
+  public updateRecord(form: NgForm) {
+    this.service.updatePublisher(form.form.value.id, form.form.value).subscribe(
+      () => {
+        this.toaster.success('Updated Successfully');
+        this.resetFrom(form);
+        this.router.navigate(['/publishers']);
+      },
+      () => {
+        this.toaster.error('An error occurred on insert the record');
+      }
+    );
+  }
+
+  public cancel() {
+    this.router.navigate(['/publishers']);
   }
 }

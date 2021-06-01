@@ -26,10 +26,11 @@ export class PublisherListComponent implements OnInit {
     });
   }
   public addPublisher() {
-    this.router.navigate(['/Publishers']);
+    this.router.navigate(['/publisher']);
+    //HACK: Check if publisher should be Publishers nested of publishers.
   }
   public editPublisher(publisherId: number) {
-    this.router.navigate(['/Publishers/' + publisherId]);
+    this.router.navigate(['/publisher/' + publisherId]);
   }
   public deletePublisher(publisherId:number) {
     this.service.deletePublisher(publisherId);

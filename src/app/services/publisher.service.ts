@@ -14,19 +14,19 @@ export class PublisherService{
     constructor(private http:HttpClient){}
 
     public addPublisher(publihser:Publisher){
-        return this.http.post(this.baseUrl+'Publishers',publihser);
+        return this.http.post(this.baseUrl+'publishers',publihser);
     }
     public updatePublisher(id:number,publisher:Publisher){
-        return this.http.put(this.baseUrl+'Publishers/'+id,publisher)
+        return this.http.put(this.baseUrl+'publishers/'+id,publisher)
     }
     public getPublishers():Observable<Publisher[]>{
-        return this.http.get<Publisher[]>(this.baseUrl+'Publishes');
+        return this.http.get<Publisher[]>(this.baseUrl+'publishers');
     }
     public deletePublisher(id:number){
-        return this.http.delete(this.baseUrl+'Publishers/'+id);
+        return this.http.delete(this.baseUrl+'publishers/'+id);
     }
     public getPublisherById(id:number):Observable<Publisher>{
-        return this.http.get<Publisher>(this.baseUrl+'Publishers/'+id)
+        return this.http.get<Publisher>(this.baseUrl+'publishers/'+id)
     }
     // TODO: Add filter by book and by author too.
 
