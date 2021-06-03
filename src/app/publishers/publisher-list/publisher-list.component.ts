@@ -40,7 +40,7 @@ export class PublisherListComponent implements OnInit {
       this.getPublishers();
     },
     error=>{
-      this.toaster.error('Faild to delete publisher');
+      this.toaster.error('Failed to delete publisher');
     }
     )
 
