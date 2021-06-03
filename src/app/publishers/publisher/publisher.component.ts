@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PublisherService } from 'src/app/services/publisher.service';
 import { ToastrService } from 'ngx-toastr';
 import { Publisher } from './../../models/Publisher';
-import { NgForm } from '@angular/forms';
+import { FormGroup, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-publisher',
@@ -12,7 +12,6 @@ import { NgForm } from '@angular/forms';
 })
 export class PublisherComponent implements OnInit {
   public formData: Publisher;
-
   constructor(
     public service: PublisherService,
     private router: Router,
@@ -65,7 +64,9 @@ export class PublisherComponent implements OnInit {
   public insertRecord(form: NgForm) {
     this.service.addPublisher(form.form.value).subscribe(
       () => {
+        console.log(form.form.value.id);
         this.toaster.success('Registration Success');
+
         this.resetFrom(form);
         this.router.navigate(['/publishers']);
       },

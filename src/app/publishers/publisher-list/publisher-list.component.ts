@@ -27,13 +27,23 @@ export class PublisherListComponent implements OnInit {
   }
   public addPublisher() {
     this.router.navigate(['/publisher']);
-    //HACK: Check if publisher should be Publishers nested of publishers.
   }
   public editPublisher(publisherId: number) {
     this.router.navigate(['/publisher/' + publisherId]);
+    console.log('...............asd')
+    console.log(publisherId);
+    //TODO Delete console.logs
   }
   public deletePublisher(publisherId:number) {
-    this.service.deletePublisher(publisherId);
+    this.service.deletePublisher(publisherId).subscribe(()=>{
+      this.toaster.success('The publisher has been deleted');
+      this.getPublishers();
+    },
+    error=>{
+      this.toaster.error('Faild to delete publisher');
+    }
+    )
+
     // Later: add confirmation dialog implementation with toaster.success and toaster.error.
   }
 }

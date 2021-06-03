@@ -1,3 +1,6 @@
 .jumbtron {
     padding-top: 60px;
 }
+i.click{
+    cursor:pointer;
+}

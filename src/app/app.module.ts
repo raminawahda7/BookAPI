@@ -6,7 +6,6 @@ import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
-import { BookService } from './services/book.service';
 import { PublisherService } from './services/publisher.service';
 import { ConfirmationDialogService } from './services/confirmation-dialog.service';
 import { BookComponent } from './books/book/book.component';
@@ -42,7 +41,7 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
   ],
-  providers: [BookService, PublisherService, ConfirmationDialogService],
+  providers: [PublisherService, ConfirmationDialogService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

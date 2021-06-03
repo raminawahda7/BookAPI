@@ -9,11 +9,33 @@
     <input type="hidden" name="id" #id="ngModel" [(ngModel)]="formData.id" />
     <div class="form-group text-center">
       <div class="form-group">
-          <input class="form-control" name="name" #name="ngModel" [(ngModel)]="formData.name" required placeholder="Publisher">
+        <input
+          class="form-control"
+          name="name"
+          #name="ngModel"
+          [(ngModel)]="formData.name"
+          required
+          [ngClass]="{
+            'is-invalid':
+              form.controls['name']?.invalid && form.controls['name']?.touched
+          }"
+          placeholder="Publisher"
+        />
+        <div class="invalid-feedback" *ngIf="name.invalid && name.touched">
+          Please inform the publisher.
+        </div>
       </div>
       <div class="form-group">
-        <button class="btn btn-success mr-2" [disabled]="form.invalid" type="submit">Save</button>
-        <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
+        <button
+          class="btn btn-success mr-2"
+          [disabled]="form.invalid"
+          type="submit"
+        >
+          Save
+        </button>
+        <button class="btn btn-default" type="button" (click)="cancel()">
+          Cancel
+        </button>
       </div>
     </div>
   </form>

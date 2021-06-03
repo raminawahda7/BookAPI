@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./author-list.component.css']
 })
 export class AuthorListComponent implements OnInit {
-
+  
   constructor() { }
 
   ngOnInit(): void {

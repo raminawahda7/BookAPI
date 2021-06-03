@@ -11,6 +11,7 @@ const routes: Routes = [
   {path:'home',component:HomeComponent},
   {path:'publishers',component:PublisherListComponent},
   {path:'publisher',component:PublisherComponent},
+  {path:'publisher/:id',component:PublisherComponent},
   {path:'books',component:BookListComponent},
   {path:'book',component:BookComponent},
   {path:'authors',component:AuthorListComponent},

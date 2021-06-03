@@ -6,22 +6,30 @@
     New Publisher
   </button>
   <hr />
-   <!-- Here you can add search div. -->
+  <!-- Here you can add search div. -->
   <div class="table table-condensed table-striped table-hover">
     <thead>
       <tr>
-        <th id="publisher" class="col-md-7">Publisher</th>
-        <th id="options">Options</th>
+        <th class="col-md-7">Publisher</th>
+        <th>Options</th>
       </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let publisher of publishers">
-            <td>{{publisher.name}}</td>
-            <td class="action-button-column">
-                <a title="Edit" (click)="editPublisher(publisher.id)"> <i class="fas fa-edit"></i></a>
-                <a title="Delete" (click)="deletePublisher(publisher.id)" style="margin-left: 12px;"> <i class="fas fa-trash-alt"></i></a>
-            </td>
-        </tr>
+      <tr *ngFor="let publisher of publishers">
+        <td>{{ publisher.name }}</td>
+        <td class="action-button-column">
+          <a title="Edit" (click)="editPublisher(publisher.id)">
+            <i class="fas fa-edit click"></i>
+          </a>
+          <a
+            title="Delete"
+            (click)="deletePublisher(publisher.id)"
+            style="margin-left: 12px"
+          >
+            <i class="fas fa-trash-alt click"></i
+          ></a>
+        </td>
+      </tr>
     </tbody>
     <!-- tbody conatains -->
   </div>
