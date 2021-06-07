@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PublisherService } from 'src/app/services/publisher.service';
 import { ToastrService } from 'ngx-toastr';
 import { Publisher } from './../../models/Publisher';
-import { FormGroup, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-publisher',
@@ -18,18 +18,19 @@ export class PublisherComponent implements OnInit {
     private route: ActivatedRoute,
     private toaster: ToastrService
   ) {}
+  id = 0; // This global id will be used to check if save button should insert publisher or update the publisher.
 
   ngOnInit(): void {
     // reset form
     this.resetFrom();
     // getPublisher by id if it's not null
-    let id;
+    // ..../publishers/1 
     this.route.params.subscribe((params) => {
-      id = params['id'];
+      this.id = params['id'];
     });
     // SO > use router.params
-    if (id != null) {
-      this.service.getPublisherById(id).subscribe(
+    if (this.id != null) {
+      this.service.getPublisherById(this.id).subscribe(
         (publisher) => {
           this.formData = publisher;
         },
@@ -47,26 +48,26 @@ export class PublisherComponent implements OnInit {
       form.form.reset();
     }
     this.formData = {
-      id: 0,
       name: '',
     };
   }
 
   public onSubmit(form: NgForm) {
-    if(form.value.id===0){
+    
+    if (this.id === undefined) {
       this.insertRecord(form);
-    }else{
+    } else {
       this.updateRecord(form);
     }
-
   }
 
   public insertRecord(form: NgForm) {
-    this.service.addPublisher(form.form.value).subscribe(
+    let publisher: Publisher = {
+      name: form.form.value.name,
+    };
+    this.service.addPublisher(publisher).subscribe(
       () => {
-        console.log(form.form.value.id);
         this.toaster.success('Registration Success');
-
         this.resetFrom(form);
         this.router.navigate(['/publishers']);
       },
@@ -76,7 +77,7 @@ export class PublisherComponent implements OnInit {
     );
   }
   public updateRecord(form: NgForm) {
-    this.service.updatePublisher(form.form.value.id, form.form.value).subscribe(
+    this.service.updatePublisher(this.id, form.form.value).subscribe(
       () => {
         this.toaster.success('Updated Successfully');
         this.resetFrom(form);

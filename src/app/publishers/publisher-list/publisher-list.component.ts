@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { PublisherResource } from 'src/app/Resources/PublisherResource';
 import { PublisherService } from 'src/app/services/publisher.service';
 
 @Component({
@@ -9,13 +10,13 @@ import { PublisherService } from 'src/app/services/publisher.service';
   styleUrls: ['./publisher-list.component.css'],
 })
 export class PublisherListComponent implements OnInit {
-  public publishers: any;
+  public publishers: PublisherResource[];
   constructor(
     private router: Router,
     private service: PublisherService,
-    private toaster: ToastrService,
-    // don't inject component ... later inject confirmation dialog service here if yopu want.
-  ) {}
+    private toaster: ToastrService
+  ) // don't inject component ... later inject confirmation dialog service here if yopu want.
+  {}
 
   ngOnInit(): void {
     this.getPublishers();
@@ -30,19 +31,20 @@ export class PublisherListComponent implements OnInit {
   }
   public editPublisher(publisherId: number) {
     this.router.navigate(['/publisher/' + publisherId]);
-    console.log('...............asd')
+    console.log('...............Id: ');
     console.log(publisherId);
     //TODO Delete console.logs
   }
-  public deletePublisher(publisherId:number) {
-    this.service.deletePublisher(publisherId).subscribe(()=>{
-      this.toaster.success('The publisher has been deleted');
-      this.getPublishers();
-    },
-    error=>{
-      this.toaster.error('Failed to delete publisher');
-    }
-    )
+  public deletePublisher(publisherId: number) {
+    this.service.deletePublisher(publisherId).subscribe(
+      () => {
+        this.toaster.success('The publisher has been deleted');
+        this.getPublishers();
+      },
+      (error) => {
+        this.toaster.error('Failed to delete publisher');
+      }
+    );
 
     // Later: add confirmation dialog implementation with toaster.success and toaster.error.
   }

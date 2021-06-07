@@ -1,1 +1,53 @@
-<p>book-list works!</p>
+<div class="jumbtron">
+  <h1 class="display-4 text-center">Books</h1>
+</div>
+<div class="col-md-12">
+  <button type="button" class="btn btn-success" (click)="addBook()">
+    New Book
+  </button>
+  <hr />
+  <!-- Here you can add search div. -->
+  <div class="table table-condensed table-bordered table-striped table-hover">
+    <thead>
+      <tr>
+        <th>Book Name</th>
+        <th>Authors</th>
+        <th class="col-md-7">Description</th>
+        <th>isAvailable</th>
+        <th>publishedDate</th>
+        <th>Options</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let book of books">
+        <td>{{ book.title }}</td>
+        <td>{{ book.authorsFullNames }}</td>
+        <td>
+          {{
+            book.description.length > 25
+              ? (book.description | slice: 0:25) + "..."
+              : book.description
+          }}
+        </td>
+        <td>{{ book.isAvailable }}</td>
+        <td>{{ book.publishedDate | date: "dd/MM/yyyy" }}</td>
+        <!-- <ul *ngFor="let author of book.authorNames">
+            <li>{{author.fullName}}</li>
+          </ul> -->
+        <td class="action-button-column">
+          <a title="Edit" (click)="editBook(book.id)">
+            <i class="fas fa-edit click"></i>
+          </a>
+          <a
+            title="Delete"
+            (click)="deleteBook(book.id)"
+            style="margin-left: 12px"
+          >
+            <i class="fas fa-trash-alt click"></i
+          ></a>
+        </td>
+      </tr>
+    </tbody>
+    <!-- tbody conatains -->
+  </div>
+</div>

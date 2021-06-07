@@ -1,1 +1,139 @@
-<p>book works!</p>
+<div class="jumbtron">
+  <form
+    [formGroup]="formData"
+    autocomplete="off"
+    class="col-md-5 form"
+    (ngSubmit)="onSubmit()"
+  >
+    <h2 class="text-center text-primary">Book</h2>
+    <div class="form-group text-center">
+      <div class="form-group">
+        <input
+          type="text"
+          formControlName="title"
+          class="form-control"
+          name="title"
+          id="title"
+          [ngClass]="{
+            'is-invalid':
+              formData.controls['title']?.invalid &&
+              formData.controls['title']?.touched
+          }"
+          placeholder="title"
+        />
+        <div
+          class="invalid-feedback"
+          *ngIf="
+            formData.controls['title'].invalid &&
+            formData.controls['title'].touched
+          "
+        >
+          Please inform the author.
+        </div>
+      </div>
+
+      <div class="form-group">
+        <textarea
+          type="text"
+          formControlName="description"
+          class="form-control"
+          name="description"
+          placeholder="description"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="isAvailable">
+          <input
+            type="checkbox"
+            formControlName="isAvailable"
+            name="isAvailable"
+            id="isAvailable"
+          />
+          is available
+        </label>
+      </div>
+
+      <div class="form-group">
+        <div class="input-group">
+          <input
+            class="form-control"
+            placeholder="dd-mm-yyyy"
+            id="publishedDate"
+            name="publishedDate"
+            ngbDatepicker
+            #d="ngbDatepicker"
+            formControlName="publishedDate"
+            class="form-control"
+            type="text"
+            [minDate]="{ year: 1800, month: 1, day: 1 }"
+            [ngClass]="{
+              'is-invalid':
+                formData.controls['publishedDate']?.invalid &&
+                formData.controls['publishedDate']?.touched
+            }"
+            required
+          />
+          <div class="input-group-append">
+            <button
+              class="btn btn-outline-secondary fa fa-calendar-alt"
+              (click)="d.toggle()"
+              type="button"
+            ></button>
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf=" formData.controls['publishedDate']?.invalid &&  formData.controls['publishedDate']?.touched"
+          >
+            Please inform the publish date
+          </div>
+        </div>
+      </div>
+      <!-- form group for select tag -->
+      <div class="form-group">
+        <label for="publisherId">Publisher</label>
+        <select formControlName="publisherId" class="form-control">
+          <option disabled>Select publisher</option>
+          <option>Choose publisher</option>
+          <option
+            *ngFor="let publisher of publisherList"
+            [ngValue]="publisher.id"
+          >
+            {{ publisher.name }}
+          </option>
+        </select>
+        <div
+          *ngIf="
+            formData.controls['publisherId'].touched &&
+            formData.controls['publisherId'].invalid
+          "
+          class="alert alert-danger"
+        >
+          <div *ngIf="formData.controls['publisherId'].errors?.required">
+            publisher is required.
+          </div>
+        </div>
+      </div>
+      <!-- close form group for select tag -->
+      <mat-form-field appearance="fill">
+        <mat-label>Authors</mat-label>
+        <mat-select formControlName="authorIds" multiple>
+          <mat-option *ngFor="let author of authorList" [value]="author.id">{{author.fullName}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="form-group">
+        <button
+          class="btn btn-success mr-2"
+          type="submit"
+          [disabled]="formData.controls['publisherId'].invalid"
+        >
+          Save
+        </button>
+        <button class="btn btn-default" type="button" (click)="cancel()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

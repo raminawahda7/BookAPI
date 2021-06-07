@@ -1,1 +1,90 @@
-<p>author works!</p>
+<div class="jumbtron">
+    <form
+      [formGroup]="formData"
+      autocomplete="off"
+      class="col-md-5 form"
+      (ngSubmit)="onSubmit()"
+    >
+      <h2 class="text-center text-primary">Author</h2>
+      <div class="form-group text-center">
+        <div class="form-group">
+          <input
+            type="text"
+            formControlName="firstName"
+            class="form-control"
+            name="firstName"
+            id="firstName"
+            [ngClass]="{
+              'is-invalid':
+                formData.controls['firstName']?.invalid &&
+                formData.controls['firstName']?.touched
+            }"
+            placeholder="first name"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              formData.controls['firstName'].invalid &&
+              formData.controls['firstName'].touched
+            "
+          >
+            Please inform the author.
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <input
+            type="text"
+            formControlName="lastName"
+            class="form-control"
+            name="lastName"
+            required
+            placeholder="last name"
+          />
+        </div>
+  
+        <div class="form-group">
+          <input
+            type="text"
+            formControlName="age"
+            class="form-control"
+            name="age"
+            required
+            placeholder="age"
+          />
+        </div>
+  
+        <div class="form-group">
+          <input
+            type="text"
+            formControlName="email"
+            class="form-control"
+            name="email"
+            required
+            placeholder="email"
+          />
+          <div
+            *ngIf="
+              formData.controls['email'].errors?.required &&
+              formData.controls['email'].errors?.invalid
+            "
+          >
+            Email is required.
+          </div>
+        </div>
+        <div class="form-group">
+          <button
+            class="btn btn-success mr-2"
+            type="submit"
+            [disabled]="formData.controls['email'].invalid"
+          >
+            Save
+          </button>
+          <button class="btn btn-default" type="button" (click)="cancel()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  

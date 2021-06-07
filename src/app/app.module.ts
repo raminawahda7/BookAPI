@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
+import { NgModule,NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { PublisherService } from './services/publisher.service';
 import { ConfirmationDialogService } from './services/confirmation-dialog.service';
@@ -18,6 +18,11 @@ import { HomeComponent } from './home/home.component';
 import { NavComponent } from './nav/nav.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 import { AppRoutingModule } from './app-routing.module';
+import { AuthorService } from './services/author.service';
+import { NgbdDatepickerPopup } from './datepicker/datepicker-popup';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -31,6 +36,7 @@ import { AppRoutingModule } from './app-routing.module';
     HomeComponent,
     NavComponent,
     ConfirmationDialogComponent,
+    NgbdDatepickerPopup,
   ],
   imports: [
     BrowserModule,
@@ -38,10 +44,15 @@ import { AppRoutingModule } from './app-routing.module';
     NgbModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
     ToastrModule.forRoot(),
   ],
-  providers: [PublisherService, ConfirmationDialogService],
+  providers: [PublisherService, AuthorService, ConfirmationDialogService],
   bootstrap: [AppComponent],
+  schemas: [NO_ERRORS_SCHEMA],
 })
 export class AppModule {}

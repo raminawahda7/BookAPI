@@ -1,1 +1,33 @@
-<p>author-list works!</p>
+<div class="jumbtron">
+  <h1 class="display-4 text-center">Authors</h1>
+</div>
+<div class="col-md-12">
+  <button type="button" class="btn btn-success" (click)="addAuthor()">
+    New Author
+  </button>
+  <hr />
+  <div class="table table-condensed table-striped table-hover">
+    <thead>
+      <tr>
+        <th class="col-md-7">Authors</th>
+        <th>Options</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let author of authors">
+        <td>{{ author.fullName }}</td>
+        <td class="action-button-column">
+          <a title="Edit"
+            ><i class="fas fa-edit click" (click)="editAuthor(author.id)"> </i
+          ></a>
+          <a
+            title="Delete"
+            (click)="deleteAuthor(author.id)"
+            style="margin-left: 12px"
+            ><i class="fas fa-trash-alt click"></i
+          ></a>
+        </td>
+      </tr>
+    </tbody>
+  </div>
+</div>
