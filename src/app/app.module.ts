@@ -1,4 +1,4 @@
-import { NgModule,NO_ERRORS_SCHEMA } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -24,9 +24,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { StoreModule } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
+import { reducers } from './store';
+import { metaReducers } from './store/index';
+import { EffectsModule } from '@ngrx/effects';
+import { PublisherEffectEffects } from './store/effects/publisher-effect.effects';
 
 @NgModule({
   declarations: [
@@ -56,6 +59,7 @@ import { environment } from '../environments/environment';
     ToastrModule.forRoot(),
     StoreModule.forRoot(reducers, { metaReducers }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
+    EffectsModule.forRoot([PublisherEffectEffects]),
   ],
   providers: [PublisherService, AuthorService, ConfirmationDialogService],
   bootstrap: [AppComponent],

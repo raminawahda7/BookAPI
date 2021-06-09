@@ -3,6 +3,10 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { PublisherResource } from 'src/app/Resources/PublisherResource';
 import { PublisherService } from 'src/app/services/publisher.service';
+import { IAppState } from 'src/app/store/interfaces/publisher.interface';
+import { Store } from '@ngrx/store';
+import { loadPublishers } from 'src/app/store/actions/publisher.actions';
+import { Publisher } from './../../models/Publisher';
 
 @Component({
   selector: 'app-publisher-list',
@@ -12,6 +16,7 @@ import { PublisherService } from 'src/app/services/publisher.service';
 export class PublisherListComponent implements OnInit {
   public publishers: PublisherResource[];
   constructor(
+    private store:Store<IAppState>,
     private router: Router,
     private service: PublisherService,
     private toaster: ToastrService
@@ -20,11 +25,14 @@ export class PublisherListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPublishers();
+    this.store.subscribe(data => { this.publishers = data.AppState.publishers ;console.log('Publishers :', this.publishers) })
   }
   private getPublishers() {
-    this.service.getPublishers().subscribe((publishers) => {
-      this.publishers = publishers;
-    });
+    // this.service.getPublishers().subscribe((publishers) => {
+    //   this.publishers = publishers;
+    // });
+    this.store.dispatch(loadPublishers())
+
   }
   public addPublisher() {
     this.router.navigate(['/publisher']);
@@ -46,6 +54,7 @@ export class PublisherListComponent implements OnInit {
       }
     );
 
-    // Later: add confirmation dialog implementation with toaster.success and toaster.error.
+    //TODO add confirmation dialog implementation with toaster.success and toaster.error.
   }
+
 }
