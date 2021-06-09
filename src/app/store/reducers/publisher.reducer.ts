@@ -1,6 +1,7 @@
 import { createReducer, on, Action } from '@ngrx/store';
-import { loadPublishersSuccess,loadPublishers,loadPublishersFailure } from '../actions/publisher.actions';
+import { loadPublishersSuccess,loadPublishers,loadPublishersFailure, createPublisher } from '../actions/publisher.actions';
 import { PublisherState, initialPublisherState } from '../states';
+import { createPublisherSuccess } from './../actions/publisher.actions';
 
 
 export function PublisherReducer(_state: PublisherState|undefined, _action: Action) {
@@ -25,6 +26,10 @@ export function PublisherReducer(_state: PublisherState|undefined, _action: Acti
       isLoading: false,
       isLoaded: true,
       totalResults: action.publishers.length
+    })),
+    on(createPublisher,(state,action)=>({
+      ...state,
+      isLoaded:true
     }))
   )(_state, _action);
   }

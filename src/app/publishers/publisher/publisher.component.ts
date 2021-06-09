@@ -4,6 +4,9 @@ import { PublisherService } from 'src/app/services/publisher.service';
 import { ToastrService } from 'ngx-toastr';
 import { Publisher } from './../../models/Publisher';
 import { NgForm } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { State } from 'src/app/store';
+import { createPublisher } from 'src/app/store/actions/publisher.actions';
 
 @Component({
   selector: 'app-publisher',
@@ -13,6 +16,7 @@ import { NgForm } from '@angular/forms';
 export class PublisherComponent implements OnInit {
   public formData: Publisher;
   constructor(
+    private store:Store<State>,
     public service: PublisherService,
     private router: Router,
     private route: ActivatedRoute,
@@ -65,16 +69,7 @@ export class PublisherComponent implements OnInit {
     let publisher: Publisher = {
       name: form.form.value.name,
     };
-    this.service.addPublisher(publisher).subscribe(
-      () => {
-        this.toaster.success('Registration Success');
-        this.resetFrom(form);
-        this.router.navigate(['/publishers']);
-      },
-      () => {
-        this.toaster.error('An error occurred on insert the record');
-      }
-    );
+    this.store.dispatch(createPublisher({newPublisher:publisher}));
   }
   public updateRecord(form: NgForm) {
     this.service.updatePublisher(this.id, form.form.value).subscribe(
