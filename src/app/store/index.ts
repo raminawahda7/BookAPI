@@ -7,10 +7,10 @@ import {
 } from '@ngrx/store';
 import { environment } from '../../environments/environment';
 import { PublisherState } from './interfaces/publisher.interface';
-import { PublisherReducer } from './reducers/publisher.reducer';
+import { publisherReducer } from './reducers/publisher.reducer';
 
 export const reducers: ActionReducerMap<PublisherState> = {
-  PublisherState: PublisherReducer,
+  publisherState: publisherReducer,
 
 };
 

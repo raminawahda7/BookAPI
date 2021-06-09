@@ -9,6 +9,6 @@ export const reducer = createReducer(
   on(loadPublishersSuccess, (state,action) => ({ ...state,publishers: action.publishers}))
 );
 
-export function PublisherReducer(state: Publisher | undefined, action: Action) {
+export function publisherReducer(state: Publisher | undefined, action: Action) {
   return reducer(state as Publisher, action as Action);
 }

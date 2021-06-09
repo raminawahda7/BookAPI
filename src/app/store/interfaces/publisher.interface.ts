@@ -6,7 +6,7 @@ export interface Publisher {
 }
 
 export interface PublisherState {
-  PublisherState: Publisher,
+  publisherState: Publisher,
 }
 
 export const initialPublisherState: Publisher = {

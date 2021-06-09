@@ -25,7 +25,7 @@ export class PublisherListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPublishers();
-    this.store.select(appState=>appState.PublisherState.publishers).subscribe((data) => {
+    this.store.select(appState=>appState.publisherState.publishers).subscribe((data) => {
       this.publishers = data;
       console.log('Publishers :', this.publishers);
     });
