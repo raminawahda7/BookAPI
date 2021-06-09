@@ -6,12 +6,13 @@ import {
   MetaReducer
 } from '@ngrx/store';
 import { environment } from '../../environments/environment';
-import { IAppState } from './interfaces/publisher.interface';
-import { AppReducer } from './reducers/publisher.reducer';
+import { PublisherState } from './interfaces/publisher.interface';
+import { PublisherReducer } from './reducers/publisher.reducer';
 
-export const reducers: ActionReducerMap<IAppState> = {
-  AppState: AppReducer,
+export const reducers: ActionReducerMap<PublisherState> = {
+  PublisherState: PublisherReducer,
+
 };
 
 
-export const metaReducers: MetaReducer<IAppState>[] = !environment.production ? [] : [];
+export const metaReducers: MetaReducer<PublisherState>[] = !environment.production ? [] : [];

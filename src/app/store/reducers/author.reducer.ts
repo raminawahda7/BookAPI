@@ -2,7 +2,7 @@ import { createReducer, on, Action } from '@ngrx/store';
 import { loadPublishers, loadPublishersSuccess } from '../actions/publisher.actions';
 import { IApp, initialAppState } from '../interfaces/publisher.interface';
 
-export const publisherFeatureKey = 'AppState';
+export const authorFeatureKey = 'AppState';
 
 export const reducer = createReducer(
   initialAppState as IApp,

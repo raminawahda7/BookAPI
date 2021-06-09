@@ -1,14 +1,14 @@
 import { createReducer, on, Action } from '@ngrx/store';
 import { loadPublishers, loadPublishersSuccess } from '../actions/publisher.actions';
-import { IApp, initialAppState } from '../interfaces/publisher.interface';
+import { Publisher, initialPublisherState } from '../interfaces/publisher.interface';
 
-export const publisherFeatureKey = 'AppState';
+export const publisherFeatureKey = 'PublisherState';
 
 export const reducer = createReducer(
-  initialAppState as IApp,
+  initialPublisherState as Publisher,
   on(loadPublishersSuccess, (state,action) => ({ ...state,publishers: action.publishers}))
 );
 
-export function AppReducer(state: IApp | undefined, action: Action) {
-  return reducer(state as IApp, action as Action);
+export function PublisherReducer(state: Publisher | undefined, action: Action) {
+  return reducer(state as Publisher, action as Action);
 }
