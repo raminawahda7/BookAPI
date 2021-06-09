@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { PublisherService } from 'src/app/services/publisher.service';
 import * as publisherActions from '../actions/publisher.actions';
-import { catchError, map, switchMap, exhaustMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 @Injectable()
-export class PublisherEffectEffects {
+export class PublisherEffects {
   constructor(
     private actions$: Actions,
     private pubservice: PublisherService
@@ -13,7 +13,7 @@ export class PublisherEffectEffects {
 
   loadPublishers = createEffect(() => 
     this.actions$.pipe(
-      // filter out the actions, except for `[Customers Page] Opened`
+      // filter out the actions, except for `[Publisher Page] Opened`
       ofType(publisherActions.loadPublishers),
       switchMap(() =>
         // call the service

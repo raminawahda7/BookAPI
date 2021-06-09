@@ -16,23 +16,22 @@ import { Publisher } from './../../models/Publisher';
 export class PublisherListComponent implements OnInit {
   public publishers: PublisherResource[];
   constructor(
-    private store:Store<IAppState>,
+    private store: Store<IAppState>,
     private router: Router,
     private service: PublisherService,
-    private toaster: ToastrService
-  ) // don't inject component ... later inject confirmation dialog service here if yopu want.
-  {}
+    private toaster: ToastrService 
+    //TODO don't inject component ... later inject confirmation dialog service here if you want.
+  ) {}
 
   ngOnInit(): void {
     this.getPublishers();
-    this.store.subscribe(data => { this.publishers = data.AppState.publishers ;console.log('Publishers :', this.publishers) })
+    this.store.select(appState=>appState.AppState.publishers).subscribe((data) => {
+      this.publishers = data;
+      console.log('Publishers :', this.publishers);
+    });
   }
   private getPublishers() {
-    // this.service.getPublishers().subscribe((publishers) => {
-    //   this.publishers = publishers;
-    // });
-    this.store.dispatch(loadPublishers())
-
+    this.store.dispatch(loadPublishers());
   }
   public addPublisher() {
     this.router.navigate(['/publisher']);
@@ -56,5 +55,4 @@ export class PublisherListComponent implements OnInit {
 
     //TODO add confirmation dialog implementation with toaster.success and toaster.error.
   }
-
 }

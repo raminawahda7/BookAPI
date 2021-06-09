@@ -1,7 +1,9 @@
 import { PublisherResource } from 'src/app/Resources/PublisherResource';
+import { AuthorResourceCreated } from './../../Resources/AuthorResourceCreated';
 
 export interface IApp {
-  publishers:PublisherResource[]
+  publishers:PublisherResource[],
+  authors:AuthorResourceCreated[]
 }
 
 export interface IAppState {
@@ -9,5 +11,6 @@ export interface IAppState {
 }
 
 export const initialAppState: IApp = {
-  publishers:[]  
+  publishers:[],
+  authors:[]
 };

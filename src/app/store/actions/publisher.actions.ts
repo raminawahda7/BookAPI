@@ -1,5 +1,4 @@
 import { createAction, props } from '@ngrx/store';
-import { Publisher } from './../../models/Publisher';
 import { PublisherResource } from 'src/app/Resources/PublisherResource';
 
 export const loadPublishers = createAction(
@@ -14,5 +13,5 @@ export const loadPublishersSuccess = createAction(
 
 export const loadPublishersFailure = createAction(
   '[Publisher] Load Publishers Failure',
-  props<{ error: string }>()
+  props<{ error: any }>()
 );

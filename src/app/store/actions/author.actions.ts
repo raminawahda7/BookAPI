@@ -1,4 +1,5 @@
 import { createAction, props } from '@ngrx/store';
+import { AuthorResourceCreated } from './../../Resources/AuthorResourceCreated';
 
 export const loadAuthors = createAction(
   '[Author] Load Authors'
@@ -6,7 +7,7 @@ export const loadAuthors = createAction(
 
 export const loadAuthorsSuccess = createAction(
   '[Author] Load Authors Success',
-  props<{ data: any }>()
+  props<{ authors: AuthorResourceCreated [] }>()
 );
 
 export const loadAuthorsFailure = createAction(

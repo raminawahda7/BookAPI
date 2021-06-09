@@ -29,7 +29,8 @@ import { environment } from '../environments/environment';
 import { reducers } from './store';
 import { metaReducers } from './store/index';
 import { EffectsModule } from '@ngrx/effects';
-import { PublisherEffectEffects } from './store/effects/publisher-effect.effects';
+import { PublisherEffects } from './store/effects/publisher.effects';
+import { AuthorEffects } from './store/effects/author.effects';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,7 @@ import { PublisherEffectEffects } from './store/effects/publisher-effect.effects
     ToastrModule.forRoot(),
     StoreModule.forRoot(reducers, { metaReducers }),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
-    EffectsModule.forRoot([PublisherEffectEffects]),
+    EffectsModule.forRoot([PublisherEffects,AuthorEffects]),
   ],
   providers: [PublisherService, AuthorService, ConfirmationDialogService],
   bootstrap: [AppComponent],
