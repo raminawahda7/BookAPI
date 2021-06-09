@@ -7,6 +7,7 @@ import { PublisherState } from 'src/app/store/states';
 import { Store } from '@ngrx/store';
 import { loadPublishers } from 'src/app/store/actions/publisher.actions';
 import { Publisher } from './../../models/Publisher';
+import { State } from 'src/app/store';
 
 @Component({
   selector: 'app-publisher-list',
@@ -16,7 +17,7 @@ import { Publisher } from './../../models/Publisher';
 export class PublisherListComponent implements OnInit {
   public publishers: PublisherResource[];
   constructor(
-    private store: Store<PublisherState>,
+    private store: Store<State>,
     private router: Router,
     private service: PublisherService,
     private toaster: ToastrService 
@@ -25,9 +26,9 @@ export class PublisherListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPublishers();
-    this.store.select(appState=>appState.publisherState.publishers).subscribe((data) => {
+    this.store.select(appState=>appState.publishers.publishers).subscribe((data) => {
       this.publishers = data;
-      console.log('Publishers :', this.publishers);
+      console.log('Publishers :', data);
     });
   }
   private getPublishers() {

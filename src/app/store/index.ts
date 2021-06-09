@@ -6,13 +6,19 @@ import {
   MetaReducer
 } from '@ngrx/store';
 import { environment } from '../../environments/environment';
-import { PublisherState } from './states';
-import { publisherReducer } from './reducers/publisher.reducer';
+import { PublisherReducer } from './reducers/publisher.reducer';
+import { AuthorReducer } from './reducers/author.reducer';
+import { AuthorState,PublisherState } from './states';
 
-export const reducers: ActionReducerMap<PublisherState> = {
-  publisherState: publisherReducer,
+export interface State {
+    publishers: PublisherState;
+    authors: AuthorState;
+}
+
+export const reducers: ActionReducerMap<State> = {
+  authors: AuthorReducer,
+  publishers:PublisherReducer
 
 };
 
 
-export const metaReducers: MetaReducer<PublisherState>[] = !environment.production ? [] : [];

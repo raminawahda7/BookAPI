@@ -27,7 +27,6 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { reducers } from './store';
-import { metaReducers } from './store/index';
 import { EffectsModule } from '@ngrx/effects';
 import { PublisherEffects } from './store/effects/publisher.effects';
 import { AuthorEffects } from './store/effects/author.effects';
@@ -58,7 +57,7 @@ import { AuthorEffects } from './store/effects/author.effects';
     MatFormFieldModule,
     MatInputModule,
     ToastrModule.forRoot(),
-    StoreModule.forRoot(reducers, { metaReducers }),
+    StoreModule.forRoot(reducers),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([PublisherEffects,AuthorEffects]),
   ],

@@ -1,14 +1,30 @@
 import { createReducer, on, Action } from '@ngrx/store';
-import { loadPublishers, loadPublishersSuccess } from '../actions/publisher.actions';
-import { IApp, initialAppState } from '../states';
+import { loadAuthors, loadAuthorsSuccess, loadAuthorsFailure } from '../actions/author.actions';
+import { initialAuthorState,AuthorState } from './../states';
 
-export const authorFeatureKey = 'AppState';
 
-export const reducer = createReducer(
-  initialAppState as IApp,
-  on(loadPublishersSuccess, (state,action) => ({ ...state,publishers: action.publishers}))
-);
-
-export function AppReducer(state: IApp | undefined, action: Action) {
-  return reducer(state as IApp, action as Action);
-}
+export function AuthorReducer(_state: AuthorState | undefined, _action: Action) {
+  return createReducer(
+    initialAuthorState,
+    on(loadAuthors, (state) => ({
+          ...state,
+          isLoading: true,
+      })
+    ),
+    on(loadAuthorsFailure, (state, action) => (
+      {
+        ...state,
+        isLoading: false,
+        isLoaded: false,
+        errorMessage: action.error,
+      })),
+  
+    on(loadAuthorsSuccess, (state, action) => ({
+      ...state,
+      authors: action.authors,
+      isLoading: false,
+      isLoaded: true,
+      totalResults: action.authors.length
+    }))
+  )(_state, _action);
+  }
