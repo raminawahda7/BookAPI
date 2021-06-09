@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { PublisherResource } from 'src/app/Resources/PublisherResource';
 import { PublisherService } from 'src/app/services/publisher.service';
-import { PublisherState } from 'src/app/store/interfaces/publisher.interface';
+import { PublisherState } from 'src/app/store/states';
 import { Store } from '@ngrx/store';
 import { loadPublishers } from 'src/app/store/actions/publisher.actions';
 import { Publisher } from './../../models/Publisher';

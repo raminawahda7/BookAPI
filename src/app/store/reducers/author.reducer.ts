@@ -1,6 +1,6 @@
 import { createReducer, on, Action } from '@ngrx/store';
 import { loadPublishers, loadPublishersSuccess } from '../actions/publisher.actions';
-import { IApp, initialAppState } from '../interfaces/publisher.interface';
+import { IApp, initialAppState } from '../states';
 
 export const authorFeatureKey = 'AppState';
 

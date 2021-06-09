@@ -6,7 +6,7 @@ import {
   MetaReducer
 } from '@ngrx/store';
 import { environment } from '../../environments/environment';
-import { PublisherState } from './interfaces/publisher.interface';
+import { PublisherState } from './states';
 import { publisherReducer } from './reducers/publisher.reducer';
 
 export const reducers: ActionReducerMap<PublisherState> = {
