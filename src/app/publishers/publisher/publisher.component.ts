@@ -6,7 +6,7 @@ import { Publisher } from './../../models/Publisher';
 import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { State } from 'src/app/store';
-import { createPublisher } from 'src/app/store/actions/publisher.actions';
+import { createPublisher,updatePublisher } from 'src/app/store/actions/publisher.actions';
 
 @Component({
   selector: 'app-publisher',
@@ -22,7 +22,7 @@ export class PublisherComponent implements OnInit {
     private route: ActivatedRoute,
     private toaster: ToastrService
   ) {}
-  id = 0; // This global id will be used to check if save button should insert publisher or update the publisher.
+  private id = 0; // This global id will be used to check if save button should insert publisher or update the publisher.
 
   ngOnInit(): void {
     // reset form
@@ -70,18 +70,23 @@ export class PublisherComponent implements OnInit {
       name: form.form.value.name,
     };
     this.store.dispatch(createPublisher({newPublisher:publisher}));
+    this.router.navigate(['/publishers']);
   }
   public updateRecord(form: NgForm) {
-    this.service.updatePublisher(this.id, form.form.value).subscribe(
-      () => {
-        this.toaster.success('Updated Successfully');
-        this.resetFrom(form);
-        this.router.navigate(['/publishers']);
-      },
-      () => {
-        this.toaster.error('An error occurred on insert the record');
-      }
-    );
+
+    this.store.dispatch(updatePublisher({id:this.id,publisherToUpdate:form.form.value}))
+    this.router.navigate(['/publishers']);
+
+    // this.service.updatePublisher(this.id, form.form.value).subscribe(
+    //   () => {
+    //     this.toaster.success('Updated Successfully');
+    //     this.resetFrom(form);
+    //     this.router.navigate(['/publishers']);
+    //   },
+    //   () => {
+    //     this.toaster.error('An error occurred on insert the record');
+    //   }
+    // );
   }
 
   public cancel() {

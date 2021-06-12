@@ -20,7 +20,6 @@ export const loadPublishersFailure = createAction(
 export const createPublisher = createAction(
   '[Publisher] Create Publisher',
   props<{ newPublisher: Publisher }>()
-
 );
 
 export const createPublisherSuccess = createAction(
@@ -30,5 +29,35 @@ export const createPublisherSuccess = createAction(
 
 export const createPublisherFailure = createAction(
   '[Publisher] Create Publisher Failure',
+  props<{ error: string }>()
+);
+
+export const updatePublisher = createAction(
+  '[Publisher] Update Publisher',
+  props<{ id: number; publisherToUpdate: Publisher }>()
+);
+
+export const updatePublisherSuccess = createAction(
+  '[Publisher] Update Publisher Success',
+  props<{ updatedPublisher: PublisherResource }>()
+);
+
+export const updatePublisherFailure = createAction(
+  '[Publisher] Update Publisher Failure ',
+  props<{ error: string }>()
+);
+
+export const deletePublisher = createAction(
+  '[Publisher] Delete Publisher',
+  props<{ id: number }>()
+);
+
+export const deletePublisherSuccess = createAction(
+  '[Publisher] Delete Publisher Success',
+  props<{ id: number,deletedPublishers: PublisherResource }>()
+);
+
+export const deletePublisherFailure = createAction(
+  '[Publisher] Delete Publisher Failure ',
   props<{ error: string }>()
 );

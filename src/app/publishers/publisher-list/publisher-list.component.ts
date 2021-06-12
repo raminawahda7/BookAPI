@@ -5,7 +5,7 @@ import { PublisherResource } from 'src/app/Resources/PublisherResource';
 import { PublisherService } from 'src/app/services/publisher.service';
 import { PublisherState } from 'src/app/store/states';
 import { Store } from '@ngrx/store';
-import { loadPublishers } from 'src/app/store/actions/publisher.actions';
+import { loadPublishers, deletePublisher } from 'src/app/store/actions/publisher.actions';
 import { Publisher } from './../../models/Publisher';
 import { State } from 'src/app/store';
 
@@ -20,16 +20,21 @@ export class PublisherListComponent implements OnInit {
     private store: Store<State>,
     private router: Router,
     private service: PublisherService,
-    private toaster: ToastrService 
-    //TODO don't inject component ... later inject confirmation dialog service here if you want.
-  ) {}
+    private toaster: ToastrService
+  ) //TODO don't inject component ... later inject confirmation dialog service here if you want.
+  {
+    this.store
+      .select((appState) => appState.publishers.publishers)
+      .subscribe((data) => {
+        this.publishers = data;
+        console.log('Publishers :', data);
+      });
+  }
 
   ngOnInit(): void {
-    this.getPublishers();
-    this.store.select(appState=>appState.publishers.publishers).subscribe((data) => {
-      this.publishers = data;
-      console.log('Publishers :', data);
-    });
+    if (this.publishers.length == 0) {
+      this.getPublishers();
+    }
   }
   private getPublishers() {
     this.store.dispatch(loadPublishers());
@@ -44,15 +49,7 @@ export class PublisherListComponent implements OnInit {
     //TODO Delete console.logs
   }
   public deletePublisher(publisherId: number) {
-    this.service.deletePublisher(publisherId).subscribe(
-      () => {
-        this.toaster.success('The publisher has been deleted');
-        this.getPublishers();
-      },
-      (error) => {
-        this.toaster.error('Failed to delete publisher');
-      }
-    );
+    this.store.dispatch(deletePublisher({id:publisherId}))
 
     //TODO add confirmation dialog implementation with toaster.success and toaster.error.
   }
