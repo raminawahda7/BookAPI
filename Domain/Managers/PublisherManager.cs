@@ -6,12 +6,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BookAPI.Repositories.Interfaces;
+using BookAPI.Repositories;
 
 namespace Domain.Managers
 {
-    public partial class Manager : IManager
+    public partial class PublisherManager : IPublisherManager
     {
+        private IRepository<Publisher,int> _publisherRepository;
+        public PublisherManager(IRepository<Publisher, int> publisherRepository)
+        {
+            _publisherRepository = publisherRepository;
+
+        }
         public async Task<Exception> DeletePublisher(int id)
         {
             var publisherToDelete = await _publisherRepository.Get(id);

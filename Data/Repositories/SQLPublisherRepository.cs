@@ -1,5 +1,5 @@
 ﻿using BookAPI.Data;
-using BookAPI.Repositories.Interfaces;
+using BookAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

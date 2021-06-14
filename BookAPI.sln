@@ -4,18 +4,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookAPI", "WebApplicationPractice\BookAPI.csproj", "{F921EA66-790F-4FE3-8B71-252F1198E876}"
-	ProjectSection(ProjectDependencies) = postProject
-		{15C7DEFC-FEE7-433A-A2C1-DB12A3DBC936} = {15C7DEFC-FEE7-433A-A2C1-DB12A3DBC936}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{03E03865-F7A2-4901-A06C-58737172CE09}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{A8221A3F-B831-47BC-989B-99275F8CEB5B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{15C7DEFC-FEE7-433A-A2C1-DB12A3DBC936} = {15C7DEFC-FEE7-433A-A2C1-DB12A3DBC936}
-	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contract", "Contract\Contract.csproj", "{15C7DEFC-FEE7-433A-A2C1-DB12A3DBC936}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contract", "Contract\Contract.csproj", "{15C7DEFC-FEE7-433A-A2C1-DB12A3DBC936}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

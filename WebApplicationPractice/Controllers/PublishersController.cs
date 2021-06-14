@@ -1,7 +1,6 @@
 ﻿using BookAPI.Data;
 using BookAPI.Helper;
 using BookAPI.Repositories;
-using BookAPI.Repositories.Interfaces;
 using Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +16,9 @@ namespace BookAPI
     [ApiController]
     public class PublishersController : ControllerBase
     {
-        public readonly IManager _publisherManager;
+        public readonly IPublisherManager _publisherManager;
 
-        public PublishersController(IManager publisherManager)
+        public PublishersController(IPublisherManager publisherManager)
 
         {
             _publisherManager = publisherManager;

@@ -1,6 +1,6 @@
 ﻿using BookAPI.Data;
 using BookAPI.Helper;
-using BookAPI.Repositories.Interfaces;
+using BookAPI.Repositories;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ namespace BookAPI
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        public readonly IManager _authorManager;
-        public AuthorsController(IManager authorManager)
+        public readonly IAuthorManager _authorManager;
+        public AuthorsController(IAuthorManager authorManager)
 
         {
             _authorManager = authorManager;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BookAPI.Repositories.Interfaces
+namespace BookAPI.Repositories
 {
     public interface IRepository<T1, T2> where T1 : class
     {

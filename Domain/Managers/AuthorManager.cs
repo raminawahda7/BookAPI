@@ -1,6 +1,6 @@
 ﻿using BookAPI.Data;
 using BookAPI.Helper;
-using BookAPI.Repositories.Interfaces;
+using BookAPI.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +9,14 @@ using System.Threading.Tasks;
 
 namespace Domain.Managers
 {
-    public partial class Manager : IManager
+    public partial class AuthorManager : IAuthorManager
     {
         private readonly IRepository<Author, int> _authorRepository;
         private readonly IRepository<Publisher, int> _publisherRepository;
 
-        public Manager(IRepository<Author, int> authorRepository,
-            IRepository<Publisher, int> publisherRepository)
+        public AuthorManager(IRepository<Author, int> authorRepository)
         {
             _authorRepository = authorRepository;
-            _publisherRepository = publisherRepository;
         }
         public async Task<Exception> DeleteAuthor(int id)
         {
