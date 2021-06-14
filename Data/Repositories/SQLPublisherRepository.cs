@@ -35,7 +35,7 @@ namespace BookAPI.Repositories
             }
         }
 
-        public async Task Delete(int id)
+        public async Task<Exception> Delete(int id)
         {
             try
             {
@@ -43,6 +43,8 @@ namespace BookAPI.Repositories
                 var publisherToDelete = await __Context.Publishers.FindAsync(id);
                 __Context.Publishers.Remove(publisherToDelete);
                 await __Context.SaveChangesAsync();
+                return null;
+
             }
             catch (Exception ex)
             {

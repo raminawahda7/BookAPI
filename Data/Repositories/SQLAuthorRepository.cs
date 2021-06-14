@@ -35,7 +35,7 @@ namespace BookAPI.Repositories
             }
         }
 
-        public async Task Delete(int id)
+        public async Task<Exception> Delete(int id)
         {
 
             // check if there is book for this id : then store it in a variable using await keywprd ((( that is mean wait till find the book THEN put it in a variable)));
@@ -44,6 +44,7 @@ namespace BookAPI.Repositories
                 var bookToDelete = await _Context.Authors.FindAsync(id);
                 _Context.Authors.Remove(bookToDelete);
                 await _Context.SaveChangesAsync();
+                return null;
             }
             catch (Exception ex)
             {

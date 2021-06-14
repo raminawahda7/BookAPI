@@ -2,6 +2,7 @@
 using BookAPI.Helper;
 using BookAPI.Repositories;
 using BookAPI.Repositories.Interfaces;
+using Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -16,124 +17,73 @@ namespace BookAPI
     [ApiController]
     public class PublishersController : ControllerBase
     {
-        private readonly IRepository<Book, int> _bookRepository;
-        private readonly IRepository<Author, int> _authorRepository;
-        private readonly IRepository<Publisher, int> _publisherRepository;
-        public PublishersController(IRepository<Book, int> bookRepository,
-            IRepository<Author, int> authorRepository
-            , IRepository<Publisher, int> publisherRepository)
+        public readonly IManager _publisherManager;
+
+        public PublishersController(IManager publisherManager)
 
         {
-            _bookRepository = bookRepository;
-            _authorRepository = authorRepository;
-            _publisherRepository = publisherRepository;
+            _publisherManager = publisherManager;
         }
         [HttpGet]
-        public async Task<IEnumerable<PublisherResource>> GetPublishers(string publisher)
+        public async Task<IActionResult> GetPublishers()
         {
-            var entities = await _publisherRepository.Get();
+            var publishers = await _publisherManager.GetPublishers();
 
-            return entities.PublisherBookResource();
+            return Ok(publishers);
         }
 
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<PublisherResource>> GetPublishers(int id)
+        public async Task<IActionResult> GetPublishers(int id)
         {
-            var publisherFromRepo = await _publisherRepository.Get(id);
-            if (publisherFromRepo == null)
-            {
-                return NotFound();
-            }
+            var publisher = await _publisherManager.GetPublisher(id);
 
-            var resource = new List<PublisherBookResource>();
-            foreach (var book in publisherFromRepo.Books)
-            {
-                resource.Add(new PublisherBookResource
-                {
-                    Id = book.Id,
-                    Title = book.Title,
-                    Description = book.Description,
-                    IsAvailable = book.IsAvailable,
-                    //AuthorNames = book.Authors.Select(e => e.FullName).ToList()
-                });
-            }
-            var publisherResource = new PublisherResource
-            {
-                Id = publisherFromRepo.Id,
-                Name = publisherFromRepo.Name,
-                Books = resource
-            };
-
-            return Ok(publisherResource);
+            return Ok(publisher);
         }
 
 
         [HttpPost]
-        public async Task<ActionResult<PublisherCreateResource>> PostPubliser([FromBody] PublisherModel publisherModel)
+        public async Task<IActionResult> PostPubliser([FromBody] PublisherModel publisherModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            // Here map (model) -> entity
-            var publisherEntity = new Publisher
-            {
-                Name = publisherModel.Name,
-            };
-            // Entity from Book
-            var newPublisher = await _publisherRepository.Create(publisherEntity);
 
-            // Here map (newBook which is Entity) -> Resource
-            var publisherResource = new PublisherCreateResource
-            {
-                Id=newPublisher.Id,
-                Name = newPublisher.Name,
-            };
+            var publisher = await _publisherManager.PostPubliser(publisherModel);
 
 
-            return CreatedAtAction(nameof(GetPublishers), new { id = newPublisher.Id }, publisherResource);
+            return Ok(publisher);
 
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<PublisherCreateResource>> PutPublihser(int id, [FromBody] PublisherModel publisherModel)
+        public async Task<IActionResult> PutPublihser(int id, [FromBody] PublisherModel publisherModel)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            // You can make it like Yazan said from his document.
-            var publisherToUpdate = await _publisherRepository.Get(id);
-
-            if (publisherToUpdate == null)
-                return NotFound();
-
-            publisherToUpdate.Name = publisherModel.Name;
-
-            await _publisherRepository.Update(publisherToUpdate);
-            var publisherResource = new PublisherCreateResource
-            {
-                Id = publisherToUpdate.Id,
-                Name = publisherToUpdate.Name,
-            };
-            return Ok(publisherResource);
+            var publisher = await _publisherManager.PutPublihser(id, publisherModel);
+            return Ok(publisher);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var publisherToDelete = await _publisherRepository.Get(id);
+            var publisherToDelete = await _publisherManager.GetPublisher(id);
 
             if (publisherToDelete == null)
-                return NotFound();
-            if (publisherToDelete.Books.Count==0)
+                return NoContent();
+            if (publisherToDelete.Books.Count == 0)
             {
-            await _publisherRepository.Delete(publisherToDelete.Id);
-            return NoContent();
+                await _publisherManager.DeletePublisher(publisherToDelete.Id);
+                return NoContent();
             }
-            return BadRequest("Can't delete publisher has book");
+            else
+                return BadRequest("Can't delete publisher has book");
+
         }
 
 

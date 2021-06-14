@@ -1,6 +1,8 @@
 using BookAPI.Data;
 using BookAPI.Repositories;
 using BookAPI.Repositories.Interfaces;
+using Domain;
+using Domain.Managers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,19 +27,20 @@ namespace BookAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddScoped<IBookRepository, BookRepository>();
 
             services.AddDbContextPool<AppDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("BookDBConnection"), b => b.MigrationsAssembly("BookAPI").UseNetTopologySuite()));
             services.AddControllers();
             services.AddSwaggerGen(c =>
 
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BookAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthorPublisherAPI", Version = "v1" });
             });
             //services.AddMvc().AddXmlSerializerFormatters();
-            services.AddScoped<IRepository<Book, int>, SQLBookRepository>();
+            services.AddScoped<IManager, Manager>();
+
             services.AddScoped<IRepository<Author, int>, SQLAuthorRepository>();
             services.AddScoped<IRepository<Publisher, int>, SQLPublisherRepository>();
+
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
