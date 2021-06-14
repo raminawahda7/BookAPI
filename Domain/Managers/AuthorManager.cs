@@ -4,7 +4,6 @@ using BookAPI.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Managers
@@ -12,7 +11,6 @@ namespace Domain.Managers
     public partial class AuthorManager : IAuthorManager
     {
         private readonly IRepository<Author, int> _authorRepository;
-        private readonly IRepository<Publisher, int> _publisherRepository;
 
         public AuthorManager(IRepository<Author, int> authorRepository)
         {
@@ -41,9 +39,16 @@ namespace Domain.Managers
                 Id = authorFromRepo.Id,
                 FullName = authorFromRepo.FullName,
                 Age = authorFromRepo.Age,
-                Email = authorFromRepo.Email
-                //BookTitles = authorFromRepo.Books.Select(e => e.Title).ToList()
+                Email = authorFromRepo.Email,
+                Books = new List<BookAuthorResource>()
             };
+            authorResource.Books = authorFromRepo.Books.Select(book => new BookAuthorResource
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Description = book.Description,
+                IsAvailable = book.IsAvailable,
+            }).ToList();
 
             return authorResource;
         }
