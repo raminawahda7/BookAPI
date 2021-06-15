@@ -36,6 +36,7 @@ namespace BookAPI
             });
             //services.AddMvc().AddXmlSerializerFormatters();
             services.AddScoped<IRepository<Book, int>, SQLBookRepository>();
+            services.AddScoped<IRepository<Author, int>, SQLAuthorRepository>();
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore

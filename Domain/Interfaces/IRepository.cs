@@ -11,6 +11,6 @@ namespace BookAPI.Repositories.Interfaces
         Task<T1> Get(T2 id);
         Task<T1> Create(T1 entity);
         Task<T1> Update(T1 entity);
-        Task Delete(T2 id);
+        Task <Exception> Delete(T2 id);
     }
 }

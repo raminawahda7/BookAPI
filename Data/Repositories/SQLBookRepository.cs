@@ -30,13 +30,21 @@ namespace BookAPI.Repositories
             return await _Context.Book.Include(b => b.Publisher).Include(b => b.Authors).FirstOrDefaultAsync(e => e.Id == book.Id);
         }
 
-        public async Task Delete(int id)
+        public async Task<Exception> Delete(int id)
         {
             // check if there is book for this id : then store it in a variable using await keywprd ((( that is mean wait till find the book THEN put it in a variable)));
-            var bookToDelete = await _Context.Book.FindAsync(id);
-            _Context.Book.Remove(bookToDelete);
-            await _Context.SaveChangesAsync();
-
+           
+            try
+            {
+                var bookToDelete = await _Context.Book.FindAsync(id);
+                _Context.Book.Remove(bookToDelete);
+                await _Context.SaveChangesAsync();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Couldn't delete book :{ex.Message}");
+            }
         }
 
         public async Task<IEnumerable<Book>> Get()

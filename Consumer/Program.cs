@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using BookAPI.Data;
+using BookAPI.Repositories;
+using BookAPI.Repositories.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -9,8 +13,20 @@ namespace Consumer
 {
     class Program
     {
+
         static void Main(string[] args)
         {
+            // ---------------------------------------
+
+            var collection = new ServiceCollection();
+            collection.AddDbContext<AppDbContext>()
+                .AddScoped<IRepository<Author, int>, SQLAuthorRepository>();
+
+            var service = collection.BuildServiceProvider();
+            var _repo = service.GetRequiredService<IRepository<Author, int>>();
+
+            // ---------------------------------------
+
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
@@ -23,8 +39,11 @@ namespace Consumer
                 consumer.Received += (model, ea) =>
                 {
                     var content = Encoding.UTF8.GetString(ea.Body.ToArray());
-                    var createdAuthor = JsonConvert.DeserializeObject<JObject>(content);
-                    Console.WriteLine(" [x] Received {0}", content.ToString());
+                    
+                    var createdAuthor = JsonConvert.DeserializeObject<Author>(content);
+                   var author =  _repo.Create(createdAuthor);
+
+                    Console.WriteLine(" [author] Received {0}", createdAuthor.ToString());
                 };
                 channel.BasicConsume(queue: "author", autoAck: true, consumer: consumer);
 
