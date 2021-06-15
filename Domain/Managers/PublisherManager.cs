@@ -10,7 +10,16 @@ using BookAPI.Repositories;
 
 namespace Domain.Managers
 {
-    public partial class PublisherManager : IPublisherManager
+    public interface IPublisherManager
+    {
+        public Task<IEnumerable<PublisherResource>> GetPublishers();
+        public Task<PublisherResource> GetPublisher(int id);
+        public Task<PublisherCreateResource> PostPubliser(PublisherModel publisherModel);
+        public Task<PublisherCreateResource> PutPublihser(int id, PublisherModel publisherModel);
+        public Task<Exception> DeletePublisher(int id);
+    }
+
+    public  class PublisherManager : IPublisherManager
     {
         private IRepository<Publisher,int> _publisherRepository;
         public PublisherManager(IRepository<Publisher, int> publisherRepository)

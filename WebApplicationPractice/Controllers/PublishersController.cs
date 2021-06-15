@@ -1,7 +1,7 @@
 ﻿using BookAPI.Data;
 using BookAPI.Helper;
 using BookAPI.Repositories;
-using Domain;
+using Domain.Managers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;

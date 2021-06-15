@@ -1,6 +1,7 @@
 ﻿using BookAPI.Data;
 using BookAPI.Helper;
 using BookAPI.Repositories;
+using Domain.Managers.Sender;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,24 @@ using System.Threading.Tasks;
 
 namespace Domain.Managers
 {
-    public partial class AuthorManager : IAuthorManager
+    public interface IAuthorManager
+    {
+        public Task<IEnumerable<AuthorResource>> GetAuthors(string author);
+        public Task<AuthorResource> GetAuthor(int id);
+        public Task<AuthorCreateResource> PostAuthor(AuthorModel authorModel);
+        public Task<AuthorCreateResource> PutAuthor(int id, AuthorModel authorModel);
+        public Task<Exception> DeleteAuthor(int id);
+
+    }
+    public  class AuthorManager : IAuthorManager
     {
         private readonly IRepository<Author, int> _authorRepository;
+        private readonly IAuthorUpdateSender _authorUpdateSender;
 
-        public AuthorManager(IRepository<Author, int> authorRepository)
+        public AuthorManager(IRepository<Author, int> authorRepository, IAuthorUpdateSender authorUpdateSender)
         {
             _authorRepository = authorRepository;
+            _authorUpdateSender = authorUpdateSender;
         }
         public async Task<Exception> DeleteAuthor(int id)
         {
@@ -79,7 +91,7 @@ namespace Domain.Managers
             authorEntity.Age = authorModel.Age;
             // Entity from Book
             var newAuthor = await _authorRepository.Create(authorEntity);
-
+            _authorUpdateSender.SendAuthor(authorEntity);
             // Here map (newBook which is Entity) -> Resource
             var authorResource = new AuthorCreateResource
             {

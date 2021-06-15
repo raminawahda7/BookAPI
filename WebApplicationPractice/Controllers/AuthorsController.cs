@@ -1,7 +1,7 @@
 ﻿using BookAPI.Data;
 using BookAPI.Helper;
 using BookAPI.Repositories;
-using Domain;
+using Domain.Managers;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;

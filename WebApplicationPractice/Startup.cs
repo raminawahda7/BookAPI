@@ -2,6 +2,7 @@ using BookAPI.Data;
 using BookAPI.Repositories;
 using Domain;
 using Domain.Managers;
+using Domain.Managers.Sender;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +36,7 @@ namespace BookAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthorPublisherAPI", Version = "v1" });
             });
             //services.AddMvc().AddXmlSerializerFormatters();
+            services.AddScoped<IAuthorUpdateSender, AuthorUpdateSender>();
             services.AddScoped<IAuthorManager, AuthorManager>();
             services.AddScoped<IPublisherManager, PublisherManager>();
 
