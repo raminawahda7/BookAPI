@@ -18,15 +18,15 @@ namespace Domain.Managers
         public Task<Exception> DeleteAuthor(int id);
 
     }
-    public  class AuthorManager : IAuthorManager
+    public class AuthorManager : IAuthorManager
     {
         private readonly IRepository<Author, int> _authorRepository;
-        private readonly IAuthorUpdateSender _authorUpdateSender;
+        private readonly ISender _sender;
 
-        public AuthorManager(IRepository<Author, int> authorRepository, IAuthorUpdateSender authorUpdateSender)
+        public AuthorManager(IRepository<Author, int> authorRepository, ISender Sender)
         {
             _authorRepository = authorRepository;
-            _authorUpdateSender = authorUpdateSender;
+            _sender = Sender;
         }
         public async Task<Exception> DeleteAuthor(int id)
         {
@@ -34,6 +34,17 @@ namespace Domain.Managers
             if (authorToDelete == null)
                 throw new Exception("Id is not found");
 
+
+            //var authorObj = new toSend()
+            //{
+            //    Id = authorToDelete.Id,
+            //    Type = "delete"
+            //};
+            _sender.SendAuthor(new toSend()
+            {
+                Id = authorToDelete.Id,
+                Type = "delete"
+            });
 
             return await _authorRepository.Delete(authorToDelete.Id);
         }
@@ -91,7 +102,11 @@ namespace Domain.Managers
             authorEntity.Age = authorModel.Age;
             // Entity from Book
             var newAuthor = await _authorRepository.Create(authorEntity);
-            _authorUpdateSender.SendAuthor(authorEntity);
+            _sender.SendAuthor(new toSend()
+            {
+                Id = newAuthor.Id,
+                Type = "create"
+            });
             // Here map (newBook which is Entity) -> Resource
             var authorResource = new AuthorCreateResource
             {
@@ -118,8 +133,15 @@ namespace Domain.Managers
             authorToUpdate.Email = authorModel.Email;
             authorToUpdate.Age = authorModel.Age;
 
-
             await _authorRepository.Update(authorToUpdate);
+
+
+            _sender.SendAuthor(new toSend()
+            {
+                Id = authorToUpdate.Id,
+                Type = "update"
+            });
+
             var authorResource = new AuthorCreateResource
             {
                 Id = authorToUpdate.Id,

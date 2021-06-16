@@ -1,12 +1,10 @@
 ﻿using BookAPI.Data;
 using BookAPI.Helper;
-
+using BookAPI.Repositories;
+using Domain.Managers.Sender;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using BookAPI.Repositories;
 
 namespace Domain.Managers
 {
@@ -21,12 +19,16 @@ namespace Domain.Managers
 
     public  class PublisherManager : IPublisherManager
     {
-        private IRepository<Publisher,int> _publisherRepository;
-        public PublisherManager(IRepository<Publisher, int> publisherRepository)
+        private readonly IRepository<Publisher,int> _publisherRepository;
+        private readonly ISender _sender;
+        public PublisherManager(IRepository<Publisher, int> publisherRepository, ISender Sender)
         {
             _publisherRepository = publisherRepository;
-
+            _sender = Sender;
         }
+
+
+        #region DeletePublisher
         public async Task<Exception> DeletePublisher(int id)
         {
             var publisherToDelete = await _publisherRepository.Get(id);
@@ -34,10 +36,20 @@ namespace Domain.Managers
             if (publisherToDelete == null)
                 throw new Exception("Id is not found");
             if (publisherToDelete.Books.Count == 0)
+            {
+                _sender.SendPublisher(new toSend()
+                {
+                    Id = publisherToDelete.Id,
+                    Type = "delete"
+                });
                 return await _publisherRepository.Delete(publisherToDelete.Id);
-            else 
-                throw new ("Can't delete publisher has book");
+            }
+            else
+                throw new("Can't delete publisher has book");
         }
+        #endregion
+
+        #region GetPublisherId
         public async Task<PublisherResource> GetPublisher(int id)
         {
             var publisherFromRepo = await _publisherRepository.Get(id);
@@ -65,14 +77,18 @@ namespace Domain.Managers
 
             return publisherResource;
         }
+        #endregion
 
+        #region GetPublishers
         public async Task<IEnumerable<PublisherResource>> GetPublishers()
         {
             var entities = await _publisherRepository.Get();
 
             return entities.PublisherBookResource();
         }
+        #endregion
 
+        #region PostPublisher
         public async Task<PublisherCreateResource> PostPubliser(PublisherModel publisherModel)
         {
             var publisherEntity = new Publisher
@@ -88,10 +104,16 @@ namespace Domain.Managers
                 Id = newPublisher.Id,
                 Name = newPublisher.Name,
             };
-
+     
+            _sender.SendPublisher(new toSend()
+            {
+                Id = newPublisher.Id,
+                Type = "create"
+            });
 
             return publisherResource;
         }
+        #endregion
 
         public async Task<PublisherCreateResource> PutPublihser(int id, PublisherModel publisherModel)
         {
@@ -109,6 +131,11 @@ namespace Domain.Managers
                 Id = publisherToUpdate.Id,
                 Name = publisherToUpdate.Name,
             };
+            _sender.SendPublisher(new toSend()
+            {
+                Id = publisherToUpdate.Id,
+                Type = "update"
+            });
             return publisherResource;
         }
     }

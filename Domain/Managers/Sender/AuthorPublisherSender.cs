@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace Domain.Managers.Sender
 {
-    public class AuthorUpdateSender:IAuthorUpdateSender
+    public class AuthorPublisherSender : ISender
     {
         private IConnection _connection;
 
-        public void SendAuthor(Author author)
+        public void SendAuthor(toSend authorObj)
         {
             if (ConnectionExists())
             {
                 using (var channel = _connection.CreateModel())
                 {
                     channel.QueueDeclare(queue: "author", durable: true, exclusive: false, autoDelete: false, arguments: null);
-
-                    var json = JsonConvert.SerializeObject(author);
+                    
+                    var json = JsonConvert.SerializeObject(authorObj);
                     var body = Encoding.UTF8.GetBytes(json);
 
                     channel.BasicPublish(exchange: "", routingKey: "author", basicProperties: null, body: body);
@@ -29,6 +29,22 @@ namespace Domain.Managers.Sender
 
             }
 
+        }
+        public void SendPublisher(toSend publisherObj)
+        {
+            if (ConnectionExists())
+            {
+                using (var channel = _connection.CreateModel())
+                {
+                    channel.QueueDeclare(queue: "publisher", durable: true, exclusive: false, autoDelete: false, arguments: null);
+
+                    var json = JsonConvert.SerializeObject(publisherObj);
+                    var body = Encoding.UTF8.GetBytes(json);
+
+                    channel.BasicPublish(exchange: "", routingKey: "publisher", basicProperties: null, body: body);
+                }
+
+            }
         }
         private void CreateConnection()
         {
@@ -56,32 +72,7 @@ namespace Domain.Managers.Sender
 
             return _connection != null;
         }
+
+
     }
 }
-
-
-//var factory = new ConnectionFactory() { HostName = "localhost" };
-//using (var connection = factory.CreateConnection())
-//{
-//    using (var channel = connection.CreateModel())
-//    {
-//        channel.QueueDeclare(queue: "counter",
-//                     durable: true,
-//                     exclusive: false,
-//                     autoDelete: false,
-//                     arguments: null);
-
-//        var message = $"Message {_messageCount++}";
-
-//        Dictionary<string, int> messages = null;
-//        _memoryCache.TryGetValue<Dictionary<string, int>>("messages", out messages);
-//        if (messages == null) messages = new Dictionary<string, int>();
-//        messages.Add(message, _messageCount);
-//        _memoryCache.Set<Dictionary<string, int>>("messages", messages);
-
-//        var messageBody = Encoding.UTF8.GetBytes(message);
-
-//        channel.BasicPublish(exchange: "counter", routingKey: "counter", body: messageBody, basicProperties: null);
-//    }
-
-

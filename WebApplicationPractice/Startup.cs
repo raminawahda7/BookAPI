@@ -36,7 +36,7 @@ namespace BookAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthorPublisherAPI", Version = "v1" });
             });
             //services.AddMvc().AddXmlSerializerFormatters();
-            services.AddScoped<IAuthorUpdateSender, AuthorUpdateSender>();
+            services.AddScoped<ISender, AuthorPublisherSender>();
             services.AddScoped<IAuthorManager, AuthorManager>();
             services.AddScoped<IPublisherManager, PublisherManager>();
 

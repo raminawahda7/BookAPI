@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210613120444_initAuthorPublisher")]
+    [Migration("20210616131841_initAuthorPublisher")]
     partial class initAuthorPublisher
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,9 +39,7 @@ namespace BookAPI.Migrations
             modelBuilder.Entity("BookAPI.Data.Author", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<int?>("Age")
                         .HasColumnType("int");
@@ -98,9 +96,7 @@ namespace BookAPI.Migrations
             modelBuilder.Entity("BookAPI.Data.Publisher", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

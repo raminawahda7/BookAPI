@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Managers.Sender
 {
-    public interface IAuthorUpdateSender
+    public class toSend
     {
-        void SendAuthor(Author author);
+        public int Id { get; set; }
+        public string Type { get; set; }
     }
 }
