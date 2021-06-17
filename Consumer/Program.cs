@@ -23,44 +23,69 @@ namespace Consumer
             var collection = new ServiceCollection();
             Configure(collection);
             var services = collection.BuildServiceProvider();
-            //var _repo = service.GetRequiredService<IRepository<Author, int>>();
-            var _authorService = services.GetRequiredService<IAuthorPublisherServices>();
+            var _consumerService = services.GetRequiredService<IAuthorPublisherServices>();
             // ---------------------------------------
 
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "author", durable: true, exclusive: false, autoDelete: false, arguments: null);
+                channel.QueueDeclare(queue: "authorPublisher", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
-                Console.WriteLine(" [*] Waiting for messages.");
+                Console.WriteLine(" [*] Waiting for author messages.");
 
                 var consumer = new EventingBasicConsumer(channel);
                 consumer.Received += async (model, ea) =>
                 {
                     var content = Encoding.UTF8.GetString(ea.Body.ToArray());
 
-                    var authorObj = JsonConvert.DeserializeObject<toReceive>(content);
-                    switch (authorObj.Type)
+                    var received = JsonConvert.DeserializeObject<toReceive>(content);
+                    if (received.entityType == "author")
                     {
-                        case "create":
-                            await _authorService.CreateAuthor(authorObj.Id);
-                            break;
-                        //case "update":
-                        //    var authorToUpdate = await _repo.Get(authorObj.Id);
-                        //    await _repo.Update(authorToUpdate);
-                        //    break;
-                        //case "delete":
-                        //    await _repo.Delete(authorObj.Id);
-                        //    break;
-                        default:
-                            break;
+                        switch (received.ProcessType)
+                        {
+                            case "create":
+                                await _consumerService.CreateAuthor(received.Id);
+                                break;
+                            case "update":
+                                await _consumerService.UpdateAuthor(received.Id);
+                                break;
+                            case "delete":
+                                await _consumerService.DeleteAuthor(received.Id);
+                                break;
+                            default:
+                                break;
+                        }
+                        Console.WriteLine($" [{received.entityType}] Received {0}  {received.ProcessType} consumed ...");
                     }
-
-
-                    Console.WriteLine($" [author] Received {0}  {authorObj.Type} consumed ...");
+                    else if (received.entityType == "publisher")
+                    {
+                        switch (received.ProcessType)
+                        {
+                            case "create":
+                                await _consumerService.CreatePublisher(received.Id);
+                                break;
+                            case "update":
+                                await _consumerService.UpdatePublisher(received.Id);
+                                break;
+                            case "delete":
+                                await _consumerService.DeletePublisher(received.Id);
+                                break;
+                            default:
+                                break;
+                        }
+                        Console.WriteLine($" [{received.entityType}] Received {0} and {received.ProcessType} consumed ...");
+                    }
+                    else
+                    {
+                        throw new Exception(" There is no type of entity in the message ....");
+                    }
                 };
-                channel.BasicConsume(queue: "author", autoAck: true, consumer: consumer);
+
+                channel.BasicConsume(queue: "authorPublisher", autoAck: true, consumer: consumer);
+
+                Console.WriteLine("--------------------------------------------------");
+
 
                 Console.WriteLine(" Press [enter] to exit.");
                 Console.ReadLine();
@@ -73,6 +98,7 @@ namespace Consumer
 
             services.AddDbContext<AppDbContext>(o => o.UseSqlServer(connectionSql, b => b.MigrationsAssembly("BookAPI").UseNetTopologySuite()))
                 .AddScoped<IRepository<Author, int>, SQLAuthorRepository>()
+                .AddScoped<IRepository<Publisher, int>, SQLPublisherRepository>()
                 .AddScoped<IAuthorPublisherServices, AuthorPublisherServices>()
                 .AddHttpClient<IAuthorPublisherServices, AuthorPublisherServices>();
         }

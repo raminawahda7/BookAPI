@@ -16,10 +16,11 @@ namespace Consumer.Services
         private readonly IRepository<Author, int> _authorRepository;
         private readonly IRepository<Publisher, int> _publisherRepository;
         private readonly HttpClient _httpClient;
-        public AuthorPublisherServices( HttpClient httpClient, IRepository<Author, int> authorRepository)
+        public AuthorPublisherServices(HttpClient httpClient, IRepository<Author, int> authorRepository, IRepository<Publisher, int> publisherRepository)
         {
             _httpClient = httpClient;
             _authorRepository = authorRepository;
+            _publisherRepository = publisherRepository;
         }
         string baseUrl = "https://localhost:44359/api/";
 
@@ -73,35 +74,48 @@ namespace Consumer.Services
                 Id = Id,
                 FirstName = names[0],
                 LastName = names[1],
-                Age=data.Age,
-                Email=data.Email
+                Age = data.Age,
+                Email = data.Email
             };
             await _authorRepository.Create(author);
-            Console.WriteLine($" it should be string  :::::::::::::: {response}");
-
         }
 
-        public Task CreatePublisher(int Id)
+        public async Task CreatePublisher(int Id)
+        {
+            Uri geturi = new Uri(baseUrl + "publishers/" + Id); //replace your url  
+
+            var responseGet = await _httpClient.GetAsync(geturi, HttpCompletionOption.ResponseHeadersRead);
+            Console.WriteLine($" is it json :::::::::::::: {responseGet}");
+            //var stream = await responseGet.Content.ReadAsStreamAsync();
+            //var data = await JsonSerializer.Deserialize<Author>(stream);
+            //var datas =  JsonConvert.DeserializeObject<Author>(responseGet);
+            //await _authorRepository.Create();
+            string response = await responseGet.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<PublisherResource>(response);
+            var publisher = new Publisher()
+            {
+                Id = Id,
+                Name = data.Name
+            };
+            await _publisherRepository.Create(publisher);
+        }
+
+        public async Task DeleteAuthor(int Id)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAuthor(int Id)
+        public async Task DeletePublisher(int Id)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeletePublisher(int Id)
+        public async Task UpdateAuthor(int Id)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateAuthor(int Id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdatePublisher(int Id)
+        public async Task UpdatePublisher(int Id)
         {
             throw new NotImplementedException();
         }

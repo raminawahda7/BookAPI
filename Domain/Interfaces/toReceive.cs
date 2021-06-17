@@ -10,8 +10,7 @@ namespace BookAPI.Repositories.Interfaces
     public class toReceive
     {
         public int Id { get; set; }
-        public Author Author { get; set; }
-
-        public string Type { get; set; }
+        public string entityType { get; set; }
+        public string ProcessType { get; set; }
     }
 }
