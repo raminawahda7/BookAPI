@@ -37,7 +37,9 @@ namespace BookAPI.Migrations
             modelBuilder.Entity("BookAPI.Data.Author", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("Age")
                         .HasColumnType("int");
@@ -56,7 +58,7 @@ namespace BookAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Authors");
+                    b.ToTable("Author");
                 });
 
             modelBuilder.Entity("BookAPI.Data.Book", b =>
@@ -94,7 +96,9 @@ namespace BookAPI.Migrations
             modelBuilder.Entity("BookAPI.Data.Publisher", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -103,7 +107,7 @@ namespace BookAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Publishers");
+                    b.ToTable("Publisher");
                 });
 
             modelBuilder.Entity("AuthorBook", b =>

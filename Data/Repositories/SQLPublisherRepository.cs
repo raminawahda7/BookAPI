@@ -10,11 +10,11 @@ namespace BookAPI.Repositories
 {
     public class SQLPublisherRepository : IRepository<Publisher, int>
     {
-        private readonly AppDbContext __Context;
+        private readonly AppDbContext _Context;
 
         public SQLPublisherRepository(AppDbContext Context)
         {
-            __Context = Context;
+            _Context = Context;
         }
         public async Task<Publisher> Create(Publisher publisher)
         {
@@ -24,10 +24,10 @@ namespace BookAPI.Repositories
             }
             try
             {
-                __Context.Publishers.Add(publisher);
-                await __Context.SaveChangesAsync();
+                await _Context.Publisher.AddAsync(publisher);
+                await _Context.SaveChangesAsync();
 
-                return await __Context.Publishers.Include(e => e.Books).FirstOrDefaultAsync(e => e.Id == publisher.Id);
+                return await _Context.Publisher.Include(e => e.Books).FirstOrDefaultAsync(e => e.Id == publisher.Id);
             }
             catch (Exception ex)
             {
@@ -40,9 +40,9 @@ namespace BookAPI.Repositories
             try
             {
                 // check if there is book for this id : then store it in a variable using await keywprd ((( that is mean wait till find the book THEN put it in a variable)));
-                var publisherToDelete = await __Context.Publishers.FindAsync(id);
-                __Context.Publishers.Remove(publisherToDelete);
-                await __Context.SaveChangesAsync();
+                var publisherToDelete = await _Context.Publisher.FindAsync(id);
+                _Context.Publisher.Remove(publisherToDelete);
+                await _Context.SaveChangesAsync();
                 return null;
 
             }
@@ -57,21 +57,21 @@ namespace BookAPI.Repositories
         {
             try
             {
-                return await __Context.Publishers.Include(p => p.Books).ThenInclude(b => b.Authors).ToListAsync();
+                return await _Context.Publisher.Include(p => p.Books).ThenInclude(b => b.Authors).ToListAsync();
 
             }
             catch (Exception ex)
             {
                 throw new Exception($"Couldn't retrieve publisher :{ex.Message}");
             }
-            //return await __Context.Publishers.Include(b => b.Books).ToListAsync();
+            //return await _Context.Publishers.Include(b => b.Books).ToListAsync();
         }
 
         public async Task<Publisher> Get(int id)
         {
             try
             {
-                return await __Context.Publishers.Include(p => p.Books).ThenInclude(b => b.Authors).FirstOrDefaultAsync(p => p.Id == id);
+                return await _Context.Publisher.Include(p => p.Books).ThenInclude(b => b.Authors).FirstOrDefaultAsync(p => p.Id == id);
             }
             catch (Exception ex)
             {
@@ -88,8 +88,8 @@ namespace BookAPI.Repositories
             try
             {
 
-            __Context.Entry(publisher).State = EntityState.Modified;
-            await __Context.SaveChangesAsync();
+            _Context.Entry(publisher).State = EntityState.Modified;
+            await _Context.SaveChangesAsync();
             return publisher;
             }
             catch(Exception ex)

@@ -36,12 +36,12 @@ namespace BookAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthorPublisherAPI", Version = "v1" });
             });
             //services.AddMvc().AddXmlSerializerFormatters();
+            services.AddScoped<IRepository<Author, int>, SQLAuthorRepository>();
+            services.AddScoped<IRepository<Publisher, int>, SQLPublisherRepository>();
             services.AddScoped<ISender, AuthorPublisherSender>();
             services.AddScoped<IAuthorManager, AuthorManager>();
             services.AddScoped<IPublisherManager, PublisherManager>();
 
-            services.AddScoped<IRepository<Author, int>, SQLAuthorRepository>();
-            services.AddScoped<IRepository<Publisher, int>, SQLPublisherRepository>();
 
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>

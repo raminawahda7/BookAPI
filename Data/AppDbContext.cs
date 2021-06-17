@@ -19,8 +19,8 @@ namespace BookAPI.Data
             base.OnModelCreating(modelBuilder);
         }
         public DbSet<Book> Book { get; set; }
-        public DbSet<Publisher> Publishers { get; set; }
-        public DbSet<Author> Authors { get; set; }
+        public DbSet<Publisher> Publisher { get; set; }
+        public DbSet<Author> Author { get; set; }
    
     }
 

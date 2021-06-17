@@ -24,9 +24,8 @@ namespace BookAPI.Repositories
             }
             try
             {
-                _Context.Authors.Add(author);
+                await _Context.Author.AddAsync(author);
                 await _Context.SaveChangesAsync();
-
                 return author;
             }
             catch (Exception ex)
@@ -41,8 +40,8 @@ namespace BookAPI.Repositories
             // check if there is book for this id : then store it in a variable using await keywprd ((( that is mean wait till find the book THEN put it in a variable)));
             try
             {
-                var bookToDelete = await _Context.Authors.FindAsync(id);
-                _Context.Authors.Remove(bookToDelete);
+                var bookToDelete = await _Context.Author.FindAsync(id);
+                _Context.Author.Remove(bookToDelete);
                 await _Context.SaveChangesAsync();
                 return null;
             }
@@ -56,7 +55,7 @@ namespace BookAPI.Repositories
         {
             try
             {
-                return await _Context.Authors.Include(b => b.Books).ToListAsync();
+                return await _Context.Author.Include(b => b.Books).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -68,7 +67,7 @@ namespace BookAPI.Repositories
         {
             try
             {
-                return await _Context.Authors.Include(b => b.Books).FirstOrDefaultAsync(e => e.Id == id);
+                return await _Context.Author.Include(b => b.Books).FirstOrDefaultAsync(e => e.Id == id);
             }
             catch (Exception ex)
             {
