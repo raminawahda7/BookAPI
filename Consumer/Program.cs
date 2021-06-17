@@ -1,6 +1,9 @@
 ﻿using BookAPI.Data;
 using BookAPI.Repositories;
 using BookAPI.Repositories.Interfaces;
+using Consumer.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,18 +16,15 @@ namespace Consumer
 {
     class Program
     {
-
         static void Main(string[] args)
         {
             // ---------------------------------------
 
             var collection = new ServiceCollection();
-            collection.AddDbContext<AppDbContext>()
-                .AddScoped<IRepository<Author, int>, SQLAuthorRepository>();
-
-            var service = collection.BuildServiceProvider();
-            var _repo = service.GetRequiredService<IRepository<Author, int>>();
-
+            Configure(collection);
+            var services = collection.BuildServiceProvider();
+            //var _repo = service.GetRequiredService<IRepository<Author, int>>();
+            var _authorService = services.GetRequiredService<IAuthorPublisherServices>();
             // ---------------------------------------
 
             var factory = new ConnectionFactory() { HostName = "localhost" };
@@ -36,14 +36,29 @@ namespace Consumer
                 Console.WriteLine(" [*] Waiting for messages.");
 
                 var consumer = new EventingBasicConsumer(channel);
-                consumer.Received += (model, ea) =>
+                consumer.Received += async (model, ea) =>
                 {
                     var content = Encoding.UTF8.GetString(ea.Body.ToArray());
-                    
-                    var createdAuthor = JsonConvert.DeserializeObject<Author>(content);
-                   var author =  _repo.Create(createdAuthor);
 
-                    Console.WriteLine(" [author] Received {0}", createdAuthor.ToString());
+                    var authorObj = JsonConvert.DeserializeObject<toReceive>(content);
+                    switch (authorObj.Type)
+                    {
+                        case "create":
+                            await _authorService.CreateAuthor(authorObj.Id);
+                            break;
+                        //case "update":
+                        //    var authorToUpdate = await _repo.Get(authorObj.Id);
+                        //    await _repo.Update(authorToUpdate);
+                        //    break;
+                        //case "delete":
+                        //    await _repo.Delete(authorObj.Id);
+                        //    break;
+                        default:
+                            break;
+                    }
+
+
+                    Console.WriteLine($" [author] Received {0}  {authorObj.Type} consumed ...");
                 };
                 channel.BasicConsume(queue: "author", autoAck: true, consumer: consumer);
 
@@ -51,6 +66,15 @@ namespace Consumer
                 Console.ReadLine();
 
             }
+        }
+        public static void Configure(IServiceCollection services)
+        {
+            string connectionSql = "server=APPIATECH-RNAW;database=BookService;Trusted_Connection=true;";
+
+            services.AddDbContext<AppDbContext>(o => o.UseSqlServer(connectionSql, b => b.MigrationsAssembly("BookAPI").UseNetTopologySuite()))
+                .AddScoped<IRepository<Author, int>, SQLAuthorRepository>()
+                .AddScoped<IAuthorPublisherServices, AuthorPublisherServices>()
+                .AddHttpClient<IAuthorPublisherServices, AuthorPublisherServices>();
         }
     }
 }

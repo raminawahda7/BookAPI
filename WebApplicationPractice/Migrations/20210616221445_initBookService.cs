@@ -3,16 +3,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BookAPI.Migrations
 {
-    public partial class bookService : Migration
+    public partial class initBookService : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Authors",
+                name: "Author",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -20,20 +19,19 @@ namespace BookAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Authors", x => x.Id);
+                    table.PrimaryKey("PK_Author", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Publishers",
+                name: "Publisher",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Publishers", x => x.Id);
+                    table.PrimaryKey("PK_Publisher", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,9 +50,9 @@ namespace BookAPI.Migrations
                 {
                     table.PrimaryKey("PK_Book", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Book_Publishers_PublisherId",
+                        name: "FK_Book_Publisher_PublisherId",
                         column: x => x.PublisherId,
-                        principalTable: "Publishers",
+                        principalTable: "Publisher",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -70,9 +68,9 @@ namespace BookAPI.Migrations
                 {
                     table.PrimaryKey("PK_AuthorBook", x => new { x.AuthorsId, x.BooksId });
                     table.ForeignKey(
-                        name: "FK_AuthorBook_Authors_AuthorsId",
+                        name: "FK_AuthorBook_Author_AuthorsId",
                         column: x => x.AuthorsId,
-                        principalTable: "Authors",
+                        principalTable: "Author",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -100,13 +98,13 @@ namespace BookAPI.Migrations
                 name: "AuthorBook");
 
             migrationBuilder.DropTable(
-                name: "Authors");
+                name: "Author");
 
             migrationBuilder.DropTable(
                 name: "Book");
 
             migrationBuilder.DropTable(
-                name: "Publishers");
+                name: "Publisher");
         }
     }
 }
