@@ -10,6 +10,7 @@ namespace Domain.Managers.Sender
     public class toSend
     {
         public int Id { get; set; }
-        public string Type { get; set; }
+        public string entityType { get; set; }
+        public string ProcessType { get; set; }
     }
 }

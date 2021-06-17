@@ -13,39 +13,39 @@ namespace Domain.Managers.Sender
     {
         private IConnection _connection;
 
-        public void SendAuthor(toSend authorObj)
+        public void SendAuthorPublisher(toSend authorObj)
         {
             if (ConnectionExists())
             {
                 using (var channel = _connection.CreateModel())
                 {
-                    channel.QueueDeclare(queue: "author", durable: true, exclusive: false, autoDelete: false, arguments: null);
+                    channel.QueueDeclare(queue: "authorPublisher", durable: true, exclusive: false, autoDelete: false, arguments: null);
                     
                     var json = JsonConvert.SerializeObject(authorObj);
                     var body = Encoding.UTF8.GetBytes(json);
 
-                    channel.BasicPublish(exchange: "", routingKey: "author", basicProperties: null, body: body);
+                    channel.BasicPublish(exchange: "", routingKey: "authorPublisher", basicProperties: null, body: body);
                 }
 
             }
 
         }
-        public void SendPublisher(toSend publisherObj)
-        {
-            if (ConnectionExists())
-            {
-                using (var channel = _connection.CreateModel())
-                {
-                    channel.QueueDeclare(queue: "publisher", durable: true, exclusive: false, autoDelete: false, arguments: null);
+        //public void SendPublisher(toSend publisherObj)
+        //{
+        //    if (ConnectionExists())
+        //    {
+        //        using (var channel = _connection.CreateModel())
+        //        {
+        //            channel.QueueDeclare(queue: "publisher", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
-                    var json = JsonConvert.SerializeObject(publisherObj);
-                    var body = Encoding.UTF8.GetBytes(json);
+        //            var json = JsonConvert.SerializeObject(publisherObj);
+        //            var body = Encoding.UTF8.GetBytes(json);
 
-                    channel.BasicPublish(exchange: "", routingKey: "publisher", basicProperties: null, body: body);
-                }
+        //            channel.BasicPublish(exchange: "", routingKey: "publisher", basicProperties: null, body: body);
+        //        }
 
-            }
-        }
+        //    }
+        //}
         private void CreateConnection()
         {
             try

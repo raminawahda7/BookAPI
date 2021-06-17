@@ -9,8 +9,8 @@ namespace Domain.Managers.Sender
 {
     public interface ISender
     {
-        void SendAuthor(toSend authorObj);
-        void SendPublisher(toSend publisherObj);
+        void SendAuthorPublisher(toSend authorObj);
+        //void SendPublisher(toSend publisherObj);
 
     }
 }

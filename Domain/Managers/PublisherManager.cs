@@ -26,7 +26,7 @@ namespace Domain.Managers
             _publisherRepository = publisherRepository;
             _sender = Sender;
         }
-
+        
 
         #region DeletePublisher
         public async Task<Exception> DeletePublisher(int id)
@@ -37,10 +37,11 @@ namespace Domain.Managers
                 throw new Exception("Id is not found");
             if (publisherToDelete.Books.Count == 0)
             {
-                _sender.SendPublisher(new toSend()
+                _sender.SendAuthorPublisher(new toSend()
                 {
                     Id = publisherToDelete.Id,
-                    Type = "delete"
+                    entityType = "publisher",
+                    ProcessType = "delete"
                 });
                 return await _publisherRepository.Delete(publisherToDelete.Id);
             }
@@ -105,10 +106,11 @@ namespace Domain.Managers
                 Name = newPublisher.Name,
             };
      
-            _sender.SendPublisher(new toSend()
+            _sender.SendAuthorPublisher(new toSend()
             {
                 Id = newPublisher.Id,
-                Type = "create"
+                entityType = "publisher",
+                ProcessType = "create"
             });
 
             return publisherResource;
@@ -131,10 +133,11 @@ namespace Domain.Managers
                 Id = publisherToUpdate.Id,
                 Name = publisherToUpdate.Name,
             };
-            _sender.SendPublisher(new toSend()
+            _sender.SendAuthorPublisher(new toSend()
             {
                 Id = publisherToUpdate.Id,
-                Type = "update"
+                entityType = "publisher",
+                ProcessType = "update"
             });
             return publisherResource;
         }

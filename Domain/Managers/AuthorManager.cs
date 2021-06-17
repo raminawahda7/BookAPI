@@ -34,16 +34,11 @@ namespace Domain.Managers
             if (authorToDelete == null)
                 throw new Exception("Id is not found");
 
-
-            //var authorObj = new toSend()
-            //{
-            //    Id = authorToDelete.Id,
-            //    Type = "delete"
-            //};
-            _sender.SendAuthor(new toSend()
+            _sender.SendAuthorPublisher(new toSend()
             {
                 Id = authorToDelete.Id,
-                Type = "delete"
+                entityType = "author",
+                ProcessType = "delete"
             });
 
             return await _authorRepository.Delete(authorToDelete.Id);
@@ -94,7 +89,6 @@ namespace Domain.Managers
             {
                 FirstName = authorModel.FirstName,
                 LastName = authorModel.LastName,
-
             };
             if (authorModel.Email == null && authorModel.Age == null)
                 throw new("At least some name must be added");
@@ -102,10 +96,11 @@ namespace Domain.Managers
             authorEntity.Age = authorModel.Age;
             // Entity from Book
             var newAuthor = await _authorRepository.Create(authorEntity);
-            _sender.SendAuthor(new toSend()
+            _sender.SendAuthorPublisher(new toSend()
             {
                 Id = newAuthor.Id,
-                Type = "create"
+                entityType = "author",
+                ProcessType = "create"
             });
             // Here map (newBook which is Entity) -> Resource
             var authorResource = new AuthorCreateResource
@@ -136,10 +131,11 @@ namespace Domain.Managers
             await _authorRepository.Update(authorToUpdate);
 
 
-            _sender.SendAuthor(new toSend()
+            _sender.SendAuthorPublisher(new toSend()
             {
                 Id = authorToUpdate.Id,
-                Type = "update"
+                entityType = "author",
+                ProcessType = "update"
             });
 
             var authorResource = new AuthorCreateResource
