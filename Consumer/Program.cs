@@ -30,6 +30,7 @@ namespace Consumer
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
+                #region authorPublisher_Queue
                 channel.QueueDeclare(queue: "authorPublisher", durable: true, exclusive: false, autoDelete: false, arguments: null);
 
                 Console.WriteLine(" [*] Waiting for author messages.");
@@ -56,7 +57,7 @@ namespace Consumer
                             default:
                                 break;
                         }
-                        Console.WriteLine($" [{received.entityType}] Received {0}  {received.ProcessType} consumed ...");
+                        //Console.WriteLine($" [{received.entityType}] Received {0}  {received.ProcessType} consumed ...");
                     }
                     else if (received.entityType == "publisher")
                     {
@@ -74,7 +75,7 @@ namespace Consumer
                             default:
                                 break;
                         }
-                        Console.WriteLine($" [{received.entityType}] Received {0} and {received.ProcessType} consumed ...");
+                        //Console.WriteLine($" [{received.entityType}] Received {0} and {received.ProcessType} consumed ...");
                     }
                     else
                     {
@@ -84,12 +85,30 @@ namespace Consumer
 
                 channel.BasicConsume(queue: "authorPublisher", autoAck: true, consumer: consumer);
 
-                Console.WriteLine("--------------------------------------------------");
+                //Console.WriteLine("--------------------------------------------------");
 
 
-                Console.WriteLine(" Press [enter] to exit.");
-                Console.ReadLine();
+                //Console.WriteLine(" Press [enter] to exit.");
+                //Console.ReadLine();
+                #endregion
+                #region harvester_Queue
+                channel.QueueDeclare(queue: "harvester",
+                            durable: false,
+                            exclusive: false,
+                            autoDelete: false,
+                            arguments: null);
 
+                var harvest = new EventingBasicConsumer(channel);
+                harvest.Received += async (model, ea) =>
+                {
+                    await _consumerService.Harvest();
+                };
+                channel.BasicConsume(queue: "harvester",
+                                     autoAck: true,
+                                     consumer: harvest);
+                Console.ReadKey();
+
+                #endregion
             }
         }
         public static void Configure(IServiceCollection services)

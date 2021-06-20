@@ -1,5 +1,6 @@
 ﻿using BookAPI.Data;
 using BookAPI.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,14 @@ namespace Consumer.Services
         private readonly IRepository<Author, int> _authorRepository;
         private readonly IRepository<Publisher, int> _publisherRepository;
         private readonly HttpClient _httpClient;
-        public AuthorPublisherServices(HttpClient httpClient, IRepository<Author, int> authorRepository, IRepository<Publisher, int> publisherRepository)
+        private readonly AppDbContext _Context;
+
+        public AuthorPublisherServices(HttpClient httpClient, IRepository<Author, int> authorRepository, IRepository<Publisher, int> publisherRepository, AppDbContext Context)
         {
             _httpClient = httpClient;
             _authorRepository = authorRepository;
             _publisherRepository = publisherRepository;
+            _Context = Context;
         }
         string baseUrl = "https://localhost:44359/api/";
 
@@ -169,5 +173,53 @@ namespace Consumer.Services
             };
             await _publisherRepository.Update(publisher);
         }
+        public async Task Harvest()
+        {
+            Uri getPublishersUri = new Uri(baseUrl + "Harvest/Harvest/publishers");
+            var responseGetPublishers = await _httpClient.GetAsync(getPublishersUri, HttpCompletionOption.ResponseHeadersRead);
+            string publishersResponse = await responseGetPublishers.Content.ReadAsStringAsync();
+            var originalPublishers = JsonConvert.DeserializeObject<List<Publisher>>(publishersResponse);
+            //---------------------------------------------------------------------------------------
+            List<Publisher> bookPublishers = new List<Publisher>();
+
+            bookPublishers = await _Context.Publisher.ToListAsync();
+            List<Publisher> listOfPublishersToUpdate = new List<Publisher>();
+            //List<Publisher> listOfPublishersToDelete = new List<Publisher>();
+            //List<Publisher> listOfPublishersToAdd = new List<Publisher>();
+
+            //db.Customers.Where(c => !db.Blacklists.Any(b => b.CusId == c.Id));
+            var listOfPublishersToAdd = originalPublishers
+                .Where(c => !bookPublishers
+                    .Select(b => b.Id)
+                    .Contains(c.Id)
+                );
+            if (listOfPublishersToAdd.Any())
+            {
+                await _Context.Publisher.BulkInsertAsync(listOfPublishersToAdd);
+            }
+            var listOfPublishersToDelete = bookPublishers.Where(bookP => !originalPublishers.Select(originalP => originalP.Id).Contains(bookP.Id));
+            // delete query
+            if (listOfPublishersToDelete.Any())
+            {
+                await _Context.Publisher.BulkDeleteAsync(listOfPublishersToDelete);
+            }
+
+            // TODO: check if bookPulbisher is empty -> count =0 -> listToAdd = originalPublisher
+            // TODO: update status
+
+
+            //foreach (var publisher in originalPublishers)
+            //{
+            //    foreach (var bookPublisher in bookPublishers)
+            //    {
+            //        if (publisher.Id == bookPublisher.Id && publisher.Name != bookPublisher.Name)
+            //            listOfPublishersToUpdate.Add(bookPublisher);
+            //        else if (!originalPublishers.Contains(bookPublisher))
+            //            listOfPublishersToDelete.Add(bookPublisher);
+            //    }
+            //}
+
+        }
+
     }
 }

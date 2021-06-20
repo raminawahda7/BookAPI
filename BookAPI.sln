@@ -4,12 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookAPI", "WebApplicationPractice\BookAPI.csproj", "{F921EA66-790F-4FE3-8B71-252F1198E876}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B0026FD3-0A10-4825-AED5-301C6222BE7F} = {B0026FD3-0A10-4825-AED5-301C6222BE7F}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{03E03865-F7A2-4901-A06C-58737172CE09}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{A8221A3F-B831-47BC-989B-99275F8CEB5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consumer", "Consumer\Consumer.csproj", "{B0026FD3-0A10-4825-AED5-301C6222BE7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consumer", "Consumer\Consumer.csproj", "{B0026FD3-0A10-4825-AED5-301C6222BE7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

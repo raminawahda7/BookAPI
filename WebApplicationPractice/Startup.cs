@@ -1,6 +1,7 @@
 using BookAPI.Data;
 using BookAPI.Repositories;
 using BookAPI.Repositories.Interfaces;
+using Consumer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -37,6 +38,7 @@ namespace BookAPI
             services.AddScoped<IRepository<Book, int>, SQLBookRepository>();
             services.AddScoped<IRepository<Author, int>, SQLAuthorRepository>();
             services.AddScoped<IRepository<Publisher, int>, SQLPublisherRepository>();
+            services.AddScoped<IAuthorPublisherServices, AuthorPublisherServices>().AddHttpClient<IAuthorPublisherServices, AuthorPublisherServices>();
 
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>

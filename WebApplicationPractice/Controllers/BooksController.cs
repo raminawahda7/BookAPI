@@ -182,8 +182,7 @@ namespace BookAPI
                 PublishedDate = bookToUpdate.PublishedDate,
                 AuthorNames = listOfAuthorResource
             };
-            //JObject obj = (JObject)JToken.FromObject(bookResource);
-            //Console.WriteLine(bookResource);
+
             return Ok(bookResource);
         }
 
