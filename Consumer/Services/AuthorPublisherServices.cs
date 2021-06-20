@@ -61,10 +61,7 @@ namespace Consumer.Services
 
             var responseGet = await _httpClient.GetAsync(geturi, HttpCompletionOption.ResponseHeadersRead);
             Console.WriteLine($" is it json :::::::::::::: {responseGet}");
-            //var stream = await responseGet.Content.ReadAsStreamAsync();
-            //var data = await JsonSerializer.Deserialize<Author>(stream);
-            //var datas =  JsonConvert.DeserializeObject<Author>(responseGet);
-            //await _authorRepository.Create();
+
             string response = await responseGet.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<AuthorResource>(response);
             var names = data.FullName.Split(' ');
@@ -102,22 +99,75 @@ namespace Consumer.Services
 
         public async Task DeleteAuthor(int Id)
         {
-            throw new NotImplementedException();
+            Uri geturi = new Uri(baseUrl + "authors/" + Id); //replace your url  
+
+            var responseGet = await _httpClient.GetAsync(geturi, HttpCompletionOption.ResponseHeadersRead);
+            if (responseGet != null)
+            {
+                await _authorRepository.Delete(Id);
+            }
+            else
+            {
+                throw new Exception("Id is not found ");
+            }
+
         }
 
         public async Task DeletePublisher(int Id)
         {
-            throw new NotImplementedException();
+            Uri geturi = new Uri(baseUrl + "publishers/" + Id); //replace your url  
+
+            var responseGet = await _httpClient.GetAsync(geturi, HttpCompletionOption.ResponseHeadersRead);
+            if (responseGet != null)
+            {
+                await _publisherRepository.Delete(Id);
+            }
+            else
+            {
+                throw new Exception("Id is not found ");
+            }
         }
 
         public async Task UpdateAuthor(int Id)
         {
-            throw new NotImplementedException();
+            Uri geturi = new Uri(baseUrl + "authors/" + Id); //replace your url  
+
+            var responseGet = await _httpClient.GetAsync(geturi, HttpCompletionOption.ResponseHeadersRead);
+            Console.WriteLine($" is it json :::::::::::::: {responseGet}");
+
+            string response = await responseGet.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<AuthorResource>(response);
+            var names = data.FullName.Split(' ');
+
+            var author = new Author()
+            {
+                Id = Id,
+                FirstName = names[0],
+                LastName = names[1],
+                Age = data.Age,
+                Email = data.Email
+            };
+            await _authorRepository.Update(author);
         }
 
         public async Task UpdatePublisher(int Id)
         {
-            throw new NotImplementedException();
+            Uri geturi = new Uri(baseUrl + "publishers/" + Id); //replace your url  
+
+            var responseGet = await _httpClient.GetAsync(geturi, HttpCompletionOption.ResponseHeadersRead);
+            Console.WriteLine($" is it json :::::::::::::: {responseGet}");
+            //var stream = await responseGet.Content.ReadAsStreamAsync();
+            //var data = await JsonSerializer.Deserialize<Author>(stream);
+            //var datas =  JsonConvert.DeserializeObject<Author>(responseGet);
+            //await _authorRepository.Create();
+            string response = await responseGet.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<PublisherResource>(response);
+            var publisher = new Publisher()
+            {
+                Id = Id,
+                Name = data.Name
+            };
+            await _publisherRepository.Update(publisher);
         }
     }
 }

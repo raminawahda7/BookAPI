@@ -17,11 +17,13 @@ namespace BookAPI
     public class BooksController : ControllerBase
     {
         private readonly IRepository<Book, int> _bookRepository;
-   
-        public BooksController(IRepository<Book, int> bookRepository)
+        private readonly IRepository<Author, int> _authorRepository;
+
+        public BooksController(IRepository<Book, int> bookRepository, IRepository<Author, int> authorRepository)
 
         {
             _bookRepository = bookRepository;
+            _authorRepository = authorRepository;
         }
         [HttpGet]
         public async Task<IEnumerable<BookResource>> GetBooks(string book,string author)
@@ -85,8 +87,8 @@ namespace BookAPI
                 return BadRequest(ModelState);
             }
             // Here map (model) -> entity
-            //var authors = _authorRepository.Get().Result.Where(e => bookModel.AuthorIds.Contains(e.Id)).ToList();
-            //if (authors.Count < bookModel.AuthorIds.Count) throw new Exception("Id is not correct");
+            var authors = _authorRepository.Get().Result.Where(e => bookModel.AuthorIds.Contains(e.Id)).ToList();
+            if (authors.Count < bookModel.AuthorIds.Count) throw new Exception("Id is not correct");
 
             var bookEntity = new Book
             {
@@ -95,13 +97,24 @@ namespace BookAPI
                 IsAvailable = bookModel.IsAvailable,
                 PublisherId = bookModel.PublisherId,
                 PublishedDate = bookModel.PublishedDate,
+                Authors = authors
             };
 
             // insert this record to database by repo
             var newBook = await _bookRepository.Create(bookEntity);
             // map author list into book resource
+            var listOfAuthorResource = new List<AuthorCreateResource>();
 
-  
+            foreach (var author in authors)
+            {
+                var authorResource = new AuthorCreateResource
+                {
+                    Id = author.Id,
+                    FullName = author.FullName
+                };
+                listOfAuthorResource.Add(authorResource);
+            }
+
             // Here map (newBook which is Entity) -> Resource
             var bookResource = new BookResource
             {
@@ -111,6 +124,7 @@ namespace BookAPI
                 IsAvailable = newBook.IsAvailable,
                 Publisher = newBook.Publisher.Name,
                 PublishedDate = newBook.PublishedDate,
+                AuthorNames = listOfAuthorResource
             };
 
 
@@ -131,20 +145,32 @@ namespace BookAPI
             //if (bookToUpdate == null)
             //    return NotFound();
 
-            //var authors = _authorRepository.Get().Result.ToList().Where(e => bookModel.AuthorIds.Contains(e.Id)).ToList();
+            var authors = _authorRepository.Get().Result.ToList().Where(e => bookModel.AuthorIds.Contains(e.Id)).ToList();
 
-            //if (authors.Count < bookModel.AuthorIds.Count) throw new Exception("Id is not correct");
+            if (authors.Count < bookModel.AuthorIds.Count) throw new Exception("Id is not correct");
 
             bookToUpdate.Title = bookModel.Title;
             bookToUpdate.Description = bookModel.Description;
             bookToUpdate.IsAvailable = bookModel.IsAvailable;
             bookToUpdate.PublisherId = bookModel.PublisherId;
             bookToUpdate.PublishedDate = bookModel.PublishedDate;
+            bookToUpdate.Authors = authors;
 
             if (bookToUpdate == null)
                 return NotFound();
             await _bookRepository.Update(bookToUpdate);
             // map authors list into book resource
+            var listOfAuthorResource = new List<AuthorCreateResource>();
+
+            foreach (var author in authors)
+            {
+                var authorResource = new AuthorCreateResource
+                {
+                    Id = author.Id,
+                    FullName = author.FullName
+                };
+                listOfAuthorResource.Add(authorResource);
+            }
 
             var bookResource = new BookResource
             {
@@ -154,7 +180,10 @@ namespace BookAPI
                 IsAvailable = bookToUpdate.IsAvailable,
                 Publisher = bookToUpdate.Publisher.Name,
                 PublishedDate = bookToUpdate.PublishedDate,
+                AuthorNames = listOfAuthorResource
             };
+            //JObject obj = (JObject)JToken.FromObject(bookResource);
+            //Console.WriteLine(bookResource);
             return Ok(bookResource);
         }
 
