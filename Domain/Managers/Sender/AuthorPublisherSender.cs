@@ -30,22 +30,7 @@ namespace Domain.Managers.Sender
             }
 
         }
-        //public void SendPublisher(toSend publisherObj)
-        //{
-        //    if (ConnectionExists())
-        //    {
-        //        using (var channel = _connection.CreateModel())
-        //        {
-        //            channel.QueueDeclare(queue: "publisher", durable: true, exclusive: false, autoDelete: false, arguments: null);
-
-        //            var json = JsonConvert.SerializeObject(publisherObj);
-        //            var body = Encoding.UTF8.GetBytes(json);
-
-        //            channel.BasicPublish(exchange: "", routingKey: "publisher", basicProperties: null, body: body);
-        //        }
-
-        //    }
-        //}
+   
         private void CreateConnection()
         {
             try
