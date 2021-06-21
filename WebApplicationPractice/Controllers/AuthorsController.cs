@@ -18,7 +18,6 @@ namespace BookAPI
 
         {
             _authorManager = authorManager;
-
         }
 
 
