@@ -1,5 +1,6 @@
 ﻿using BookAPI.Data;
 using Consumer.Services;
+using Domain.enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RabbitMQ.Client;
@@ -15,20 +16,8 @@ namespace BookAPI.Controllers
     [ApiController]
     public class HarvestController : ControllerBase
     {
-        //private readonly IAuthorPublisherServices _authorPublisherServices;
-
-        //public HarvestController(IAuthorPublisherServices authorPublisherServices)
-        //{
-        //    _authorPublisherServices = authorPublisherServices;
-        //}
-        //[HttpGet]
-        //public async Task<IEnumerable<Publisher>> SyncData() 
-        //{
-        //   var data = await _authorPublisherServices.HarvestPublisher();
-        //    return data;
-        //}
         [HttpGet]
-        public void SyncData()
+        public void SyncData(ListOfHarvest listOfHarvest)
         {
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using (var connection = factory.CreateConnection())
@@ -40,8 +29,7 @@ namespace BookAPI.Controllers
                                      autoDelete: false,
                                      arguments: null);
 
-                string message = "hravestpublisher";
-                var body = Encoding.UTF8.GetBytes(message);
+                var body = Encoding.UTF8.GetBytes(listOfHarvest.ToString());
 
                 channel.BasicPublish(exchange: "",
                                      routingKey: "harvester",

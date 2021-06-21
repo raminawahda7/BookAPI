@@ -15,6 +15,8 @@ namespace Consumer.Services
         Task CreatePublisher(int Id);
         Task UpdatePublisher(int Id);
         Task DeletePublisher(int Id);
-        Task Harvest();
+        Task PublisherHarvest();
+        Task AuthorHarvest();
+
     }
 }

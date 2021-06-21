@@ -101,13 +101,25 @@ namespace Consumer
                 var harvest = new EventingBasicConsumer(channel);
                 harvest.Received += async (model, ea) =>
                 {
-                    await _consumerService.Harvest();
-                };
-                channel.BasicConsume(queue: "harvester",
-                                     autoAck: true,
-                                     consumer: harvest);
-                Console.ReadKey();
+                    var received = Encoding.UTF8.GetString(ea.Body.ToArray());
 
+                    //var received = JsonConvert.DeserializeObject<String>(content);
+                    if (received == "author")
+                        await _consumerService.AuthorHarvest();
+                    else if (received == "publisher")
+                        await _consumerService.PublisherHarvest();
+                    Console.WriteLine(" [x] Received {0}", received);
+
+                };
+
+
+
+
+                channel.BasicConsume(queue: "harvester",
+                                 autoAck: true,
+                                 consumer: harvest);
+                Console.WriteLine(" Press [enter] to exit.");
+                Console.ReadLine();
                 #endregion
             }
         }
@@ -123,3 +135,5 @@ namespace Consumer
         }
     }
 }
+
+

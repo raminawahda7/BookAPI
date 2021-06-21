@@ -40,10 +40,10 @@ namespace BookAPI
             services.AddScoped<IRepository<Publisher, int>, SQLPublisherRepository>();
             services.AddScoped<IAuthorPublisherServices, AuthorPublisherServices>().AddHttpClient<IAuthorPublisherServices, AuthorPublisherServices>();
 
-            services.AddControllersWithViews()
-                .AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                );
+            //services.AddControllersWithViews()
+            //    .AddNewtonsoftJson(options =>
+            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //    );
 
             services.AddCors();
         }
