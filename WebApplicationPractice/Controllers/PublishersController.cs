@@ -4,6 +4,7 @@ using BookAPI.Repositories;
 using Domain.Managers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,13 @@ namespace BookAPI
     public class PublishersController : ControllerBase
     {
         public readonly IPublisherManager _publisherManager;
+        //private readonly ILogger<PublishersController> _logger;
 
         public PublishersController(IPublisherManager publisherManager)
 
         {
             _publisherManager = publisherManager;
+            //_logger = logger;
         }
         [HttpGet]
         public async Task<IActionResult> GetPublishers()
